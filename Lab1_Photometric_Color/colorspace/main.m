@@ -11,9 +11,9 @@ I = imread('peppers.png');
 % close all
 % J = ConvertColorSpace(I,'rgb');
 
-% close all
+% % close all
 % J = ConvertColorSpace(I,'hsv');
-
+% 
 % close all
 % J = ConvertColorSpace(I,'ycbcr');
 
