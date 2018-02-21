@@ -25,6 +25,8 @@ imshow(ball_reflectance);
 subplot(2,2,4);
 imshow(ball_shading);
 
+%%
+
 %True material color in RGB space (uniform)
 [R,G,B] = getColorChannels(ball_reflectance);
 fprintf('R: %.4f, G: %.4f, B:%.4f',R(130,240),G(130,240),B(130,240))

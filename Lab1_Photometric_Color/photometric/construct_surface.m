@@ -51,15 +51,15 @@ switch path_type
         % YOUR CODE GOES HERE (switched rows and columns)
         previous_height_value = 0;
         for c = 1:w
-            height_value = previous_height_value + q(r,1);
-            height_map(r,1) = height_value;
+            height_value = previous_height_value + q(1,c);
+            height_map(1,c) = height_value;
             previous_height_value = height_value;
         end
         
         for c=1:w
-            previous_height_value = height_map(r, 1);
-            for c=2:h
-                height_value = previous_height_value + p(r, c);
+            previous_height_value = height_map(1, c);
+            for r=2:h
+                height_value = previous_height_value + q(r, c);
                 height_map(r, c) = height_value;
                 previous_height_value = height_value;
             end
@@ -71,7 +71,10 @@ switch path_type
         
         % =================================================================
         % YOUR CODE GOES HERE
-
+        column_wise = construct_surface(p, q, 'column');
+        row_wise = construct_surface(p, q, 'row');
+        
+        height_map = (column_wise + row_wise) ./ 2;
         
         % =================================================================
 end

@@ -34,7 +34,7 @@ for r = 1:h
             scriptI = diag(i); 
             
             %   solve scriptI(dim 5 5 ) * scriptV ( dim 5 3) * g = scriptI * i to obtain g for this point
-            [g,~] =  linsolve(scriptI * scriptV, scriptI * i);
+            [g,~] = linsolve(scriptI * scriptV, scriptI * i);
         else
             [g,~] = linsolve(scriptV, i);
         end
