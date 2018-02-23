@@ -9,15 +9,13 @@ switch LOG_type
         
 
     case 2
-        filter = fspecial('log');
-        imOut = conv2(image, filter);
+        filter = fspecial('log')
+        imOut = conv2(image, filter)
 
     case 3
         %Differnce of gaussians
-        DoG1 = fspecial('gaussian',[3 3], 1);
-        DoG2 = fspecial('gaussian',[3 3], 2);
-        filter = DoG1-DoG2;
-        imOut = conv2(image, filter);
+        DoG1 = fspecial('gaussian',[3 3] )
+        DoG2 = fspecial('gaussian',[3 3]
         
 
 end
