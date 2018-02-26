@@ -58,16 +58,16 @@ sinCarrier = createSin(rot_x, lambda, psi);
 
 % Modulate (multiply) Gaussian envelope with the carriers to compute 
 % the real and imaginary components of the omplex Gabor filter. 
-myGabor_real = gaussianEnv * cosCarrier;% \\TODO: modulate gaussianEnv with cosCarrier
-myGabor_imaginary = gaussianEnv * sinCarrier;% \\TODO: modulate gaussianEnv with sinCarrier
+myGabor_real = gaussianEnv .* cosCarrier;% \\TODO: modulate gaussianEnv with cosCarrier
+myGabor_imaginary = gaussianEnv .* sinCarrier;% \\TODO: modulate gaussianEnv with sinCarrier
 
 % Pack myGabor_real and myGabor_imaginary into myGabor.
 myGabor(:,:,1) = myGabor_real;
 myGabor(:,:,2) = myGabor_imaginary;
 
-figure;
-subplot(121), imshow(myGabor_real,[]);
-subplot(122), imshow(myGabor_imaginary, []);
+% figure;
+% subplot(121), imshow(myGabor_real,[]);
+% subplot(122), imshow(myGabor_imaginary, []);
 end
 
 
@@ -84,7 +84,7 @@ end
 function cosCarrier = createCos(rot_x, lambda, psi)
 % ----------------------------------------------------------
 % Returns the 2D cosine carrier. 
-cosCarrier = cos(2*pi(rot_x/lambda)+psi); % \\TODO: Implement the cosine given rot_x, lambda and psi.
+cosCarrier = cos(2*pi*(rot_x/lambda)+psi); % \\TODO: Implement the cosine given rot_x, lambda and psi.
 
 % Reshape the vector representation to matrix.
 cosCarrier = reshape(cosCarrier, sqrt(length(cosCarrier)), []);
@@ -94,7 +94,7 @@ end
 function sinCarrier = createSin(rot_x, lambda, psi)
 % ----------------------------------------------------------
 % Returns the 2D sine carrier. 
-sinCarrier = sin(2*pi(rot_x/lambda)+psi);% \\TODO: Implement the sine given rot_x, lambda and psi.
+sinCarrier = sin(2*pi*(rot_x/lambda)+psi);% \\TODO: Implement the sine given rot_x, lambda and psi.
 
 % Reshape the vector representation to matrix.
 sinCarrier = reshape(sinCarrier, sqrt(length(sinCarrier)), []);
