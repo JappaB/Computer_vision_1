@@ -10,6 +10,6 @@ function G = gauss1D( sigma , kernel_size )
     % Compute the 1d Gaussian
     G = 1 / (sigma * sqrt(2 * pi)) * exp(- kernel .^ 2 / (2 * sigma ^ 2));
     % Normalize the filter so the intensity doesn't change
-    G = G / sum(G)
+    G = G / sum(G);
     
 end

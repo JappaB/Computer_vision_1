@@ -38,8 +38,8 @@ switch kernel_type
             kernel_size = varargin{2};
         end
         
-%         imOut = imfilter(imgae, gauss2D(sigma, kernel_size));
-        imOut = imgaussfilt(image, sigma, 'FilterSize', kernel_size);
+        imOut = imfilter(image, gauss2D(sigma, kernel_size));
+%         imOut = imgaussfilt(image, sigma, 'FilterSize', kernel_size);
         
 end
 end

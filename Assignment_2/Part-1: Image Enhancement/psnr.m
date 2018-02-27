@@ -37,7 +37,7 @@ n = size(sigmas, 1);
 images_denoised_gauss = zeros(h, w, n);
  
 for i = 1:n
-    images_denoised_gauss(:, :, i) = denoise(image1_gauss, 'gaussian', sigmas(i), [7 7]);
+    images_denoised_gauss(:, :, i) = denoise(image1_gauss, 'gaussian', sigmas(i), 7);
 end
 %% Plot denoised images
 % Plot median filter results
@@ -65,10 +65,29 @@ for i = 1:n
 end
 %% Calculate PSN for denoised images
 
-PSNR_median = zeros(n);
-PSNR_box = zeros(n);
+PSNR_median = zeros(n, 1);
+PSNR_box = zeros(n, 1);
+PSNR_gauss = zeros(n, 1);
 
 for i = 1:n
-    PSNR_median = myPSNR(image1_original, images_denoised_median(:, :, i))
-    PSNR_box = myPSNR(image1_original, images_denoised_box(:, :, i))
+    PSNR_median(i) = myPSNR(image1_original, images_denoised_median(:, :, i));
+    PSNR_box(i) = myPSNR(image1_original, images_denoised_box(:, :, i));
+    PSNR_gauss(i) = myPSNR(image1_original, images_denoised_gauss(:,:,i));
 end
+
+%% Relation PSNR and sigma
+
+% Denoise gaussian images with gaussian 0.5, 1 and 2
+sigmas = 0.01:0.01:2;
+n = size(sigmas, 2);
+[h, w] = size(image1_gauss);
+images_denoised_gauss = zeros(h, w, n);
+
+PSNR_gauss = zeros(n, 1);
+ 
+for i = 1:n
+    images_denoised_gauss(:, :, i) = denoise(image1_gauss, 'gaussian', sigmas(i), 7);
+    PSNR_gauss(i) = myPSNR(image1_original, images_denoised_gauss(:, :, i));
+end
+
+plot(sigmas, PSNR_gauss); xlabel('Sigma'); ylabel('PSNR');
