@@ -7,7 +7,6 @@ clear all
 close all
 
 image2_original = imread('images/image2.jpg');
-dispimage
 %% Compute gradient
 [Gx, Gy, im_magnitude,im_direction] = compute_gradient(image2_original);
 
@@ -32,9 +31,9 @@ title('direction')
 imOut1 = compute_LoG(image2_original, 1);
 imOut2 = compute_LoG(image2_original, 2);
 imOut3 = compute_LoG(image2_original,3);
-figure
-subplot(131), imshow(imOut1), title('method 1');
-subplot(132), imshow(imOut2), title('method 2');
-subplot(133), imshow(imOut3), title('method 3');
+figure;
+subplot(131), imshow(imOut1);, title('method 1');
+subplot(132), imshow(imOut2);, title('method 2');
+subplot(133), imshow(imOut3);, title('method 3');
 
 
