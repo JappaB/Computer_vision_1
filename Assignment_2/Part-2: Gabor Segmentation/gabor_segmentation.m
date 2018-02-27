@@ -1,7 +1,10 @@
 %% Hyperparameters
+clc
+clear all
+close all
 k        = 2;      % number of clusters in k-means algorithm. By default, 
                    % we consider k to be 2 in foreground-background segmentation task.
-image_id = 'Kobi'; % Identifier to switch between input images.
+image_id = 'robin-2'; % Identifier to switch between input images.
                    % Possible ids: 'Kobi',    'Polar', 'Robin-1'
                    %               'Robin-2', 'Cows'
 
@@ -189,7 +192,7 @@ if smoothingFlag
         % ii) insert the smoothed image into features(:,:,jj)
     %END_FOR
     for jj = 1:length(featureMags)
-        features(:,:,jj) = imgaussfilt(featureMags{jj},gaborFilterBank(jj).sigma);
+        features(:,:,jj) = imgaussfilt(featureMags{jj},gaborFilterBank(jj).lambda);
     end
     
 else

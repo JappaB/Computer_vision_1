@@ -1,7 +1,10 @@
 %% Hyperparameters
+clc
+clear all
+close all
 k        = 2;      % number of clusters in k-means algorithm. By default, 
                    % we consider k to be 2 in foreground-background segmentation task.
-image_id = 'Kobi'; % Identifier to switch between input images.
+image_id = 'Robin-2'; % Identifier to switch between input images.
                    % Possible ids: 'Kobi',    'Polar', 'Robin-1'
                    %               'Robin-2', 'Cows'
 
@@ -133,8 +136,8 @@ fprintf('--------------------------------------\n')
 %            explain what works better and why shortly in the report.
 featureMaps = cell(length(gaborFilterBank),1);
 for jj = 1 : length(gaborFilterBank)
-    real_out = imfilter(img, gaborFilterBank(jj).filterPairs(:,:,1),'circular'); % \\TODO: filter the grayscale input with real part of the Gabor
-    imag_out = imfilter(img, gaborFilterBank(jj).filterPairs(:,:,2),'circular');% \\TODO: filter the grayscale input with imaginary part of the Gabor
+    real_out = imfilter(img_gray, gaborFilterBank(jj).filterPairs(:,:,1),'symmetric'); % \\: filter the grayscale input with real part of the Gabor
+    imag_out = imfilter(img_gray, gaborFilterBank(jj).filterPairs(:,:,2),'symmetric');% \\TODO: filter the grayscale input with imaginary part of the Gabor
     featureMaps{jj} = cat(3, real_out, imag_out);
     
     % Visualize the filter responses if you wish.
@@ -188,7 +191,9 @@ if smoothingFlag
         % i)  filter the magnitude response with appropriate Gaussian kernels
         % ii) insert the smoothed image into features(:,:,jj)
     %END_FOR
-    
+    for jj = 1:length(featureMags)
+        features(:,:,jj) = imgaussfilt(featureMags{jj},gaborFilterBank(jj).lambda);
+    end
     
 else
     % Don't smooth but just insert magnitude images into the matrix
@@ -214,7 +219,7 @@ for i = 1:size(features,2)
     stdDeviation = std(features(:,i));
     features(:,i) = features(:,i) - mean(features(:,i));
     features(:,i) = features(:,i) / stdDeviation;
-end = 1
+end 
 % \\ TODO: i)  Implement standardization on matrix called features. 
 %                     ii) Return the standardized data matrix.
 
@@ -234,7 +239,7 @@ imshow(feature2DImage,[]), title('Pixel representation projected onto first PC')
 % \\ Hint-2: use the parameter k defined in the first section when calling
 %            MATLAB's built-in kmeans function.
 tic
-pixLabels = 1% \\TODO: Return cluster labels per pixel
+pixLabels = kmeans(features, k); % \\TODO: Return cluster labels per pixel
 ctime = toc;
 fprintf('Clustering completed in %.3f seconds.\n', ctime);
 
