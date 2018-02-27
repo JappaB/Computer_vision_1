@@ -84,7 +84,7 @@ end
 function cosCarrier = createCos(rot_x, lambda, psi)
 % ----------------------------------------------------------
 % Returns the 2D cosine carrier. 
-cosCarrier = cos(2*pi(rot_x/lambda)+psi); % \\TODO: Implement the cosine given rot_x, lambda and psi.
+cosCarrier = cos(2*pi*(rot_x/lambda)+psi); % \\TODO: Implement the cosine given rot_x, lambda and psi.
 
 % Reshape the vector representation to matrix.
 cosCarrier = reshape(cosCarrier, sqrt(length(cosCarrier)), []);
@@ -94,7 +94,7 @@ end
 function sinCarrier = createSin(rot_x, lambda, psi)
 % ----------------------------------------------------------
 % Returns the 2D sine carrier. 
-sinCarrier = sin(2*pi(rot_x/lambda)+psi);% \\TODO: Implement the sine given rot_x, lambda and psi.
+sinCarrier = sin(2*pi*(rot_x/lambda)+psi);% \\TODO: Implement the sine given rot_x, lambda and psi.
 
 % Reshape the vector representation to matrix.
 sinCarrier = reshape(sinCarrier, sqrt(length(sinCarrier)), []);
