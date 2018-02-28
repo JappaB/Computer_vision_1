@@ -39,6 +39,7 @@ images_denoised_gauss = zeros(h, w, n);
 for i = 1:n
     images_denoised_gauss(:, :, i) = denoise(image1_gauss, 'gaussian', sigmas(i), 7);
 end
+
 %% Plot denoised images
 % Plot median filter results
 figure

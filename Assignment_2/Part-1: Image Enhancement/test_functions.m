@@ -24,7 +24,7 @@ title('Magnitude')
 
 subplot(224)
 imshow(im_direction);
-title('direction')
+title('Direction')
 
 %% Laplacian of Gaussians
 
@@ -32,8 +32,8 @@ imOut1 = compute_LoG(image2_original, 1);
 imOut2 = compute_LoG(image2_original, 2);
 imOut3 = compute_LoG(image2_original,3);
 figure;
-subplot(131), imshow(imOut1);, title('method 1');
-subplot(132), imshow(imOut2);, title('method 2');
-subplot(133), imshow(imOut3);, title('method 3');
+subplot(131), imshow(imOut1); title('method 1');
+subplot(132), imshow(imOut2); title('method 2');
+subplot(133), imshow(imOut3); title('method 3');
 
 
