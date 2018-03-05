@@ -8,24 +8,11 @@ pingpong_image = rgb2gray(imread('pingpong/0000.jpeg'));
 %% Plot points of interest
 
 close all
-threshold = 0.0025;
+threshold = 0.001;
 
-[H_pers, r_pers, c_pers, interest_pers, Ix, Iy] = harris_corner_detector(person_image, threshold);
-
-% [H_ping, r_ping, c_ping] = harris_corner_detector(pingpong_image, threshold);
-
-% TODO
-figure;
-imshow(person_image);
-hold on;
-plot(r_pers, c_pers, 'rd');
-
-hold off;
-figure;
-subplot(211)
-imshow(Ix)
-subplot(212)
-imshow(Iy)
+% Swapping c/r fixed pard of the problem....
+[H_pers, r_pers, c_pers] = harris_corner_detector(person_image, threshold);
+[H_ping, r_ping, c_ping] = harris_corner_detector(pingpong_image, threshold);
 
 %% Lucas-Kanade
 close all
