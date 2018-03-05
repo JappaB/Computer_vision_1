@@ -18,6 +18,7 @@ function [H, Ix, Iy] = cornerness(image)
     A = imfilter(Ix .^ 2, G, 'conv');
     C = imfilter(Iy .^ 2, G, 'conv');
     B = imfilter(Ix .* Iy, G, 'conv');
+
    
     H = (A .* C - B .^ 2) - 0.04*(A + C) .^ 2;
 end
