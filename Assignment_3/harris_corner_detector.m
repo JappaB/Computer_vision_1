@@ -4,19 +4,19 @@ function [H, r, c, local_minima, Ix, Iy] = harris_corner_detector ( image, thres
     % imerode applies non-linear filter that picks the minimum value
     % of a window around the current pixel. If that value doesn't change
     % it was a local maximum in the original.
-    local_minima = imerode(H, ones(3, 3)) == H;
-    temp = H > threshold & local_minima;
-    size(temp)
-    [r, c] = find( temp );
-    
+    local_minima = imdilate(H, ones(3, 3)) == H;
+    [r, c] = find( H > threshold & local_minima );
+
+    % Plot image gradients
     figure;
-    subplot(211)
-    imshow(Ix)
-    subplot(212)
-    imshow(Iy)
+    subplot(131)
+    imshow(mat2gray(Ix)); title('Horizontal gradient');
+    subplot(132)
+    imshow(mat2gray(Iy)); title('Vertical gradient');
+    subplot(133)
     
-    figure;
-    imshow(image);
+    % Plot image with circles around the detected corners
+    imshow(image); title('Interest points');
     hold on;
     plot(c, r, 'rd');
     hold off;
