@@ -1,4 +1,4 @@
-function [Vx Vy] = lucas_kanade(image1, image2, time_step, i_r, i_c)
+function [Vx, Vy, i_r, i_c] = lucas_kanade(image1, image2, time_step, i_r, i_c)
 
 
 % hyper params
@@ -74,10 +74,10 @@ for idx = [i_r; i_c]
     col = round(idx(2));
     
     % specify boundaries
-    row_start = min(max(1, row - boundary_offset),rows)
-    row_stop = min(row + boundary_offset-1,rows)
-    col_start = min(max(1, col - boundary_offset), cols)
-    col_stop = min(col + boundary_offset-1, cols)
+    row_start = min(max(1, row - boundary_offset),rows);
+    row_stop = min(row + boundary_offset-1,rows);
+    col_start = min(max(1, col - boundary_offset), cols);
+    col_stop = min(col + boundary_offset-1, cols);
 
     % Create window arround gradients
     windowIx = Ix(row_start:row_stop,col_start:col_stop);
@@ -92,7 +92,6 @@ for idx = [i_r; i_c]
     windowIy = windowIy(:);
     windowIt = windowIt(:);
 
-
     % Build elements of system to solve
     A = [windowIx windowIy];
     b = -windowIt;
@@ -100,6 +99,7 @@ for idx = [i_r; i_c]
     % Solve the equation using the pseudo-inverse of A
     V = pinv(A) * b;
 
+    % Find index of interest point
     x = find(i_r==row);
     y = find(i_c==col);
     
