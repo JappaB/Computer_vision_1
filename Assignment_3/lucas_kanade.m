@@ -15,12 +15,11 @@ else
     image2_gray = im2double(image2);    
 end 
 
-
+[ rows, cols ] = size(image1_gray); %Images should be equal size
 
 % Define hard-coded regions to track
 if nargin < 4
     % Divide input images on non-overlapping regions, each region being 15×15
-    [ rows, cols ] = size(image1_gray); %Images should be equal size
     num_rows = floor(rows/region_size); % Floor (vs ceil) to prevent going out of the image
     num_cols = floor(cols/region_size);
 
@@ -29,12 +28,12 @@ if nargin < 4
     i_c = ((ceil(region_size/2)):region_size+1:cols);
     
     % repeat the row indices and reshape to [a a a b b b c c c]
-    region_centers_row = repmat(i_r, 1, num_rows)';
-    region_centers_row = region_centers_row(:)';
+    i_r = repmat(i_r, 1, num_rows)';
+    i_r = i_r(:)';
     
     % repeat the col indices and reshape to [a b c a b c a b c]
-    region_centers_col = repmat(i_c, 1, num_cols)';
-    region_centers_col = region_centers_col(:)';
+    i_c = repmat(i_c, 1, num_cols)';
+    i_c = i_c(:)';
 end
 
 % Test plot to show boundaries of regions
@@ -60,7 +59,7 @@ Ix = Ix(:,:,1);
 Iy = Iy(:,:,1);
 It = It(:,:,1);
 
-n_points = size(region_centers_col, 1);
+n_points = size(i_c, 1);
 
 % Initiate V, for each pixel in the x and the y direction
 Vx = zeros(n_points);
@@ -68,17 +67,19 @@ Vy = zeros(n_points);
 
 i = 1;
 % Calculate for each region
-for idx = [region_centers_row; region_centers_col]
+for idx = [i_r; i_c]
 
-    row = idx(1);
-    col = idx(2);
+    % Ensure coords are integers
+    row = round(idx(1));
+    col = round(idx(2));
     
     % specify boundaries
-    row_start = min(row - boundary_offset,rows);
-    row_stop = min(row + boundary_offset-1,rows);
-    col_start = min(col - boundary_offset, cols);
-    col_stop = min(col + boundary_offset-1, cols);
+    row_start = min(max(1, row - boundary_offset),rows)
+    row_stop = min(row + boundary_offset-1,rows)
+    col_start = min(max(1, col - boundary_offset), cols)
+    col_stop = min(col + boundary_offset-1, cols)
 
+    % Create window arround gradients
     windowIx = Ix(row_start:row_stop,col_start:col_stop);
     windowIy = Iy(row_start:row_stop,col_start:col_stop);
     windowIt = It(row_start:row_stop,col_start:col_stop);
@@ -99,8 +100,8 @@ for idx = [region_centers_row; region_centers_col]
     % Solve the equation using the pseudo-inverse of A
     V = pinv(A) * b;
 
-    x = find(region_centers_row==row);
-    y = find(region_centers_col==col);
+    x = find(i_r==row);
+    y = find(i_c==col);
     
     % Assign V(1) and V(2) to vectors OUTSIDE of the loop        
     Vx(i) = V(1);
@@ -120,17 +121,6 @@ end
 % size(region_centers_row)
 % size(Vx)
 % size(Vy)
-
-
-
-
-figure();
-imshow(image2);
-hold on;
-
-quiver(region_centers_col,region_centers_row,Vx,Vy)
-hold off;
-
 
 end
 
