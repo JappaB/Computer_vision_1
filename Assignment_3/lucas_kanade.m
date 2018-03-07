@@ -1,8 +1,6 @@
 function [Vx Vy] = lucas_kanade(image1, image2, time_step, i_r, i_c)
 
 
-
-
 % hyper params
 region_size = 15;
 boundary_offset = region_size - ceil(region_size/2);
@@ -17,13 +15,15 @@ else
     image2_gray = im2double(image2);    
 end 
 
-% Divide input images on non-overlapping regions, each region being 15×15
-[ rows, cols ] = size(image1_gray); %Images should be equal size
-num_rows = floor(rows/region_size); % Floor (vs ceil) to prevent going out of the image
-num_cols = floor(cols/region_size);
+
 
 % Define hard-coded regions to track
 if nargin < 4
+    % Divide input images on non-overlapping regions, each region being 15×15
+    [ rows, cols ] = size(image1_gray); %Images should be equal size
+    num_rows = floor(rows/region_size); % Floor (vs ceil) to prevent going out of the image
+    num_cols = floor(cols/region_size);
+
     % define diagonal [ a b c ], [ a b c ]
     i_r = ((ceil(region_size/2)):region_size+1:rows)';
     i_c = ((ceil(region_size/2)):region_size+1:cols);
@@ -55,60 +55,58 @@ end
 I = image1_gray;
 I(:,:,2) = image2_gray;
 
-[Ix,Iy,It] = gradient(I)
+[Ix,Iy,It] = gradient(I);
+Ix = Ix(:,:,1);
+Iy = Iy(:,:,1);
+It = It(:,:,1);
+
+n_points = size(region_centers_col, 1);
 
 % Initiate V, for each pixel in the x and the y direction
-Vx = zeros(num_rows,num_cols);
-Vy = zeros(num_cols,num_cols);
+Vx = zeros(n_points);
+Vy = zeros(n_points);
 
+i = 1;
 % Calculate for each region
-for row = region_centers_row
-    for col = region_centers_col
-        
-        % specify boundaries
-        row_start = min(row - boundary_offset,rows);
-        row_stop = min(row + boundary_offset-1,rows);
-        col_start = min(col - boundary_offset, cols);
-        col_stop = min(col + boundary_offset-1, cols);
-        
-        windowIx = Ix(row_start:row_stop,col_start:col_stop);
-        windowIy = Iy(row_start:row_stop,col_start:col_stop);
-        windowIt = It(row_start:row_stop,col_start:col_stop);
-        
-        % Partial derivatives Ix, Iy and It
-        % This representation of T assumes a time step of one
-%         [Ix, Iy] = gradient(windowI);
-        
-        %TODO Let op: It is nog zero...
-%         It = windowI(:,:,1)-windowI(:,:,2);
-       
-        % If the timestep is larger than one, multiply 
-        It = It*time_step;
-        
-        % Unroll gradient intensities to create 1D vectors 
-        windowIx = windowIx(:);
-        windowIy = windowIy(:);
-        windowIt = windowIt(:);
-        
-        % Build elements of system to solve
-        A = [windowIx windowIy];
-        b = -windowIt;
-        
-        % Solve the equation using the pseudo-inverse of A
-        V = pinv(A) * b;
-        
-        % Find the row and column that belong to the interest point
-        x = find(region_centers_row==row);
-        y = find(region_centers_col==col);
-        
-        
-        %Assign V(1) and V(2) to vectors OUTSIDE of the loop        
-        Vx(x,y) = V(1);
-        Vy(x,y) = V(2);
-        
-        
-                
-        end
+for idx = [region_centers_row; region_centers_col]
+
+    row = idx(1);
+    col = idx(2);
+    
+    % specify boundaries
+    row_start = min(row - boundary_offset,rows);
+    row_stop = min(row + boundary_offset-1,rows);
+    col_start = min(col - boundary_offset, cols);
+    col_stop = min(col + boundary_offset-1, cols);
+
+    windowIx = Ix(row_start:row_stop,col_start:col_stop);
+    windowIy = Iy(row_start:row_stop,col_start:col_stop);
+    windowIt = It(row_start:row_stop,col_start:col_stop);
+
+    % If the timestep is larger than one, multiply 
+    windowIt = windowIt*time_step;
+
+    % Unroll gradient intensities to create 1D vectors 
+    windowIx = windowIx(:);
+    windowIy = windowIy(:);
+    windowIt = windowIt(:);
+
+
+    % Build elements of system to solve
+    A = [windowIx windowIy];
+    b = -windowIt;
+
+    % Solve the equation using the pseudo-inverse of A
+    V = pinv(A) * b;
+
+    x = find(region_centers_row==row);
+    y = find(region_centers_col==col);
+    
+    % Assign V(1) and V(2) to vectors OUTSIDE of the loop        
+    Vx(i) = V(1);
+    Vy(i) = V(2);
+    
+    i = i + 1;
 end
 
 
@@ -129,7 +127,8 @@ end
 figure();
 imshow(image2);
 hold on;
-quiver(region_centers_row,region_centers_col,Vx,Vy)
+
+quiver(region_centers_col,region_centers_row,Vx,Vy)
 hold off;
 
 

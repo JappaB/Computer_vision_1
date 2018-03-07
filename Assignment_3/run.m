@@ -20,11 +20,11 @@ angle = random('uniform', 1, 360)
 rotated_person = imrotate(person_image, angle);
 [H_rotated, r_rotated, c_rotated] = harris_corner_detector(rotated_person, threshold_pers);
 
-%% Lucas-Kanade
+%% Lucas-Kanade for a single image pair
 close all
-
-
+ 
 image1 = imread('sphere1.ppm');
 image2 = imread('sphere2.ppm');
 
-lucas_kanade(image1, image2, 1);
+[Vx, Vy] = lucas_kanade(image1, image2, 1);
+
