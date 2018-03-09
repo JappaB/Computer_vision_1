@@ -24,16 +24,14 @@ if nargin < 4
     num_cols = floor(cols/region_size);
 
     % define diagonal [ a b c ], [ a b c ]
-    i_r = ((ceil(region_size/2)):region_size+1:rows)';
+    i_r = ((ceil(region_size/2)):region_size+1:rows);
     i_c = ((ceil(region_size/2)):region_size+1:cols);
     
     % repeat the row indices and reshape to [a a a b b b c c c]
-    i_r = repmat(i_r, 1, num_rows)';
-    i_r = i_r(:)';
+    i_r = repelem(i_r, 1, num_rows);
     
     % repeat the col indices and reshape to [a b c a b c a b c]
-    i_c = repmat(i_c, 1, num_cols)';
-    i_c = i_c(:)';
+    i_c = repmat(i_c, 1, num_cols);
 end
 
 % Test plot to show boundaries of regions
