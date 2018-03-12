@@ -16,8 +16,8 @@ rotated_person = imrotate(person_image, angle);
 %% Lucas-Kanade for a single image pair
 close all
  
-image1 = imread('sphere1.ppm');
-image2 = imread('sphere2.ppm');
+image1 = imread('synth1.pgm');
+image2 = imread('synth2.pgm');
 
 lucas_demo(image1, image2);
 
