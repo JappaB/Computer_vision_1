@@ -78,3 +78,28 @@ hold off
 % title(ax, 'Candidate point matches');
 % legend(ax, 'Matched points 1','Matched points 2');
 %% RANSAC
+dataIn = fa(1:2, sela);
+dataOut = fb(1:2, selb);
+sampleSize = 3;
+iterationCount = 10;
+threshDist = 10;
+inlierRatio = 0;
+
+% TODO: Debug ransac
+A = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
+
+%% Transform image1 according to affine matrix found by RANSAC
+
+% TODO: calculate size of new canvas
+newImage = zeros(3*size(image1));
+
+% Use affine matrix to map each pixel to a new coordinate
+for x = 1:size(image1, 2)
+    for y = 1:size(image1, 1)
+        cord = [x; y; 1];
+        newCord = A * cord;
+        newCord = round(newCord(1:2, :) / newCord(3, :));
+        newImage(newCord(2), newCord(1)) = image1(y,x);
+    end 
+end
+imshow(newImage);
