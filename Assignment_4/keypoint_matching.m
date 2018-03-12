@@ -28,12 +28,10 @@ close all
 
 % randomly sample 50 points
 perm = randperm(size(matches,2)) ;
-n_points = 5;
+n_points = 50;
 sel = perm(1:n_points) ;
 sela = matches(1,sel);
 selb = matches(2,sel);
-
-
 
 % the second image starts after the first image
 % shift the coordinates with the number of cols in image1
@@ -51,8 +49,7 @@ h3 = vl_plotframe(fb_new(:,selb)) ;
 h4 = vl_plotframe(fb_new(:,selb)) ;
 
 %Plot the lines
-%TODO plot ALL lines.. for loop doesnt seem to work
-for i = n_points;
+for i = 1:n_points
     p1 = [fa(2,sela(i)),fa(1,sela(i))];
     p2 = [fb_new(2,selb(i)),fb_new(1,selb(i))];
     plot([p1(2),p2(2)],[p1(1),p2(1)],'color','r','LineWidth',2);
