@@ -13,6 +13,7 @@ function transformation = ransac(dataIn, dataOut, sampleSize, iterationCount, th
     bestInNum = 0; % inliers of sample with most inliers
     transformation = eye(3);
     for i=1:iterationCount
+        rng(1);
         %% Randomly select 4 points
         sampleIndices = randperm(number,sampleSize);
         
@@ -24,24 +25,30 @@ function transformation = ransac(dataIn, dataOut, sampleSize, iterationCount, th
 %         probleem.. Komt pas van pas bij stitching geloof ik. Het kan ook
 %         met projective, maar volgens de opdracht moet het met affine.
 %         M = createProjectionMatrix(xaya, xy);
-        M = createAffineTransformation(xy, xaya);
+        M = createAffineTransformation(xaya, xy);
+%         M = M(1:2,1:2);
+%         t = M(1:2, end);
         
         %% Compute the total squared distances of the whole set
         
         % Convert points in homogeneous coordinate system
         transformedPoints = M * [xy; ones(1, size(xy, 2))];
+%         transformedPoints = zeros(size(xy));
+%         for i=1:size(xy,2)
+%             transformedPoints(:,i) = M * xy(:,i) + t;
+%         end
             
         % and convert back
         transformedPoints(1,:) = transformedPoints(1,:) ./ transformedPoints(3,:);
         transformedPoints(2,:) = transformedPoints(2,:) ./ transformedPoints(3,:);
         
-        xPointsTarget = xaya(1,:)
+        xPointsTarget = xaya(1,:);
         yPointsTarget = xaya(2,:);
-        xPointsTrans = transformedPoints(1,:)
+        xPointsTrans = transformedPoints(1,:);
         yPointsTrans = transformedPoints(2,:);
         
         % TODO: Analyse why there are very high values for distance
-        distance = sum(sqrt((xPointsTarget - xPointsTrans).^2 + (yPointsTarget - yPointsTrans).^2))
+        distance = hypot(xPointsTarget-xPointsTrans, yPointsTarget-yPointsTrans)
         
         inlierIdx = find(abs(distance)<=threshDist);
         inlierNum = length(inlierIdx);

@@ -80,10 +80,10 @@ hold off
 %% RANSAC
 dataIn = fa(1:2, sela);
 dataOut = fb(1:2, selb);
-sampleSize = 3;
+sampleSize = 2;
 iterationCount = 10;
 threshDist = 10;
-inlierRatio = 0;
+inlierRatio = 0.6;
 
 % TODO: Debug ransac
 A = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
@@ -91,7 +91,7 @@ A = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio)
 %% Transform image1 according to affine matrix found by RANSAC
 
 % TODO: calculate size of new canvas
-newImage = zeros(3*size(image1));
+newImage = zeros(size(image1));
 
 % Use affine matrix to map each pixel to a new coordinate
 for x = 1:size(image1, 2)
@@ -102,4 +102,4 @@ for x = 1:size(image1, 2)
         newImage(newCord(2), newCord(1)) = image1(y,x);
     end 
 end
-imshow(newImage);
+imshow([image1, newImage]);
