@@ -14,14 +14,8 @@ else
     image2_gray = single(image2);    
 end 
 
-%% find the features using SIFT
-% The matrix f has a column for each frame
-% A frame is a disk of center f(1:2), scale f(3) and orientation f(4)
-
-[fa, da] = vl_sift(image1_gray) ;
-[fb, db] = vl_sift(image2_gray) ;
-% matches 
-[matches, scores] = vl_ubcmatch(da, db) ;
+%% Detect features
+[fa, fb, matches] = keypoint_matching(image1_gray, image2_gray);
 
 %% Plot the images with lines showing 50 random pairs
 close all
@@ -59,18 +53,19 @@ hold off
 %% RANSAC
 dataIn = fa(1:2, matches(1,:));
 dataOut = fb(1:2, matches(2,:));
-sampleSize = 2;
+sampleSize = 3;
 iterationCount = 10000;
 threshDist = 10;
 inlierRatio = 0;
 
 [A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
 [B, ~] = ransac(dataOut, dataIn, sampleSize, iterationCount, threshDist, inlierRatio);
-%% Transform image1 according to affine matrix found by RANSAC
+%% Transform image1 and image2 according to affine matrices found by RANSAC
 
 newImage2 = transformImage(image2, A);
 newImage1 = transformImage(image1, B);
 
+%%
 subplot(1,2,1)
 imshow(image1)
 subplot(1,2,2)
