@@ -78,28 +78,39 @@ hold off
 % title(ax, 'Candidate point matches');
 % legend(ax, 'Matched points 1','Matched points 2');
 %% RANSAC
-dataIn = fa(1:2, sela);
-dataOut = fb(1:2, selb);
+dataIn = fa(1:2, matches(1,:));
+dataOut = fb(1:2, matches(2,:));
 sampleSize = 2;
-iterationCount = 10;
+iterationCount = 10000;
 threshDist = 10;
-inlierRatio = 0.6;
+inlierRatio = 0;
 
 % TODO: Debug ransac
-A = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
-
+[A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio)
+inliers = matches(:, inliers);
+A = createAffineTransformation(fa(1:2, inliers), fb(1:2, inliers));
 %% Transform image1 according to affine matrix found by RANSAC
 
 % TODO: calculate size of new canvas
-newImage = zeros(size(image1));
+[h, w] = calculateCanvasSize(image2, A);
+newImage = zeros(ceil(w), ceil(h));
 
-% Use affine matrix to map each pixel to a new coordinate
-for x = 1:size(image1, 2)
-    for y = 1:size(image1, 1)
+%% Use affine matrix to map each pixel to a new coordinate
+for x = 1:size(newImage, 2)
+    for y = 1:size(newImage, 1)
+        
+        % calculate the coordinate of the pixel that would land at (x,y)
         cord = [x; y; 1];
-        newCord = A * cord;
-        newCord = round(newCord(1:2, :) / newCord(3, :));
-        newImage(newCord(2), newCord(1)) = image1(y,x);
+        oldCord = A \ cord;
+        
+        % Check if the coordinate inside the canvas of the source image
+        if all(oldCord > 0) && oldCord(1) < size(image2, 1) && oldCord(2) < size(image2, 2)
+            newImage(cord(1), cord(2)) = image2(ceil(oldCord(1)), ceil(oldCord(2)));
+        end
     end 
 end
-imshow([image1, newImage]);
+
+subplot(1,2,1)
+imshow(image1)
+subplot(1,2,2)
+imshow(mat2gray(newImage))
