@@ -56,27 +56,6 @@ for i = 1:n_points
 end
 
 hold off
-
-%# plot the points.
-%# Note that depending on the definition of the points,
-%# you may have to swap x and y
-% plot([p1(2),p2(2)],[p1(1),p2(1)],'Color','r','LineWidth',2)
-
-% set(h1,'color','k','linewidth',3) ;
-% set(h2,'color','y','linewidth',2) ;
-
-%  %other possibility: https://stackoverflow.com/questions/22733985/draw-matched-points-between-two-images-in-matlab
-% 
-% % randomly sample 50 points
-% sample = datasample(matches,50,2);
-% 
-% matchedPoints1 = da(sample(1,:));
-% matchedPoints2 = db(sample(2,:));
-% % Plot
-% figure; ax = axes;
-% showMatchedFeatures(image1_gray,image2_gray,matchedPoints1,matchedPoints2,'montage','Parent',ax);
-% title(ax, 'Candidate point matches');
-% legend(ax, 'Matched points 1','Matched points 2');
 %% RANSAC
 dataIn = fa(1:2, matches(1,:));
 dataOut = fb(1:2, matches(2,:));
@@ -85,32 +64,20 @@ iterationCount = 10000;
 threshDist = 10;
 inlierRatio = 0;
 
-% TODO: Debug ransac
-[A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio)
-inliers = matches(:, inliers);
-A = createAffineTransformation(fa(1:2, inliers), fb(1:2, inliers));
+[A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
+[B, ~] = ransac(dataOut, dataIn, sampleSize, iterationCount, threshDist, inlierRatio);
 %% Transform image1 according to affine matrix found by RANSAC
 
-% TODO: calculate size of new canvas
-[h, w] = calculateCanvasSize(image2, A);
-newImage = zeros(ceil(w), ceil(h));
-
-%% Use affine matrix to map each pixel to a new coordinate
-for x = 1:size(newImage, 2)
-    for y = 1:size(newImage, 1)
-        
-        % calculate the coordinate of the pixel that would land at (x,y)
-        cord = [x; y; 1];
-        oldCord = A \ cord;
-        
-        % Check if the coordinate inside the canvas of the source image
-        if all(oldCord > 0) && oldCord(1) < size(image2, 1) && oldCord(2) < size(image2, 2)
-            newImage(cord(1), cord(2)) = image2(ceil(oldCord(1)), ceil(oldCord(2)));
-        end
-    end 
-end
+newImage2 = transformImage(image2, A);
+newImage1 = transformImage(image1, B);
 
 subplot(1,2,1)
 imshow(image1)
 subplot(1,2,2)
-imshow(mat2gray(newImage))
+imshow(mat2gray(newImage2))
+
+figure
+subplot(1,2,1)
+imshow(image2)
+subplot(1,2,2)
+imshow(mat2gray(newImage1))
