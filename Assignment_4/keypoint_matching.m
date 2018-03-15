@@ -87,8 +87,8 @@ inlierRatio = 0;
 
 % TODO: Debug ransac
 [A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio)
-inliers = matches(:, inliers);
-A = createAffineTransformation(fa(1:2, inliers), fb(1:2, inliers));
+% inliers = matches(:, inliers);
+% A = createAffineTransformation(fa(1:2, inliers), fb(1:2, inliers));
 %% Transform image1 according to affine matrix found by RANSAC
 
 % TODO: calculate size of new canvas
@@ -104,8 +104,8 @@ for x = 1:size(newImage, 2)
         oldCord = A \ cord;
         
         % Check if the coordinate inside the canvas of the source image
-        if all(oldCord > 0) && oldCord(1) < size(image2, 1) && oldCord(2) < size(image2, 2)
-            newImage(cord(1), cord(2)) = image2(ceil(oldCord(1)), ceil(oldCord(2)));
+        if all(oldCord > 1) && oldCord(1) < size(image2, 1) && oldCord(2) < size(image2, 2)
+            newImage(cord(1), cord(2)) = image2(round(oldCord(1)), round(oldCord(2)));
         end
     end 
 end
