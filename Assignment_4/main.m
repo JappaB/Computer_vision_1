@@ -56,23 +56,26 @@ dataOut = fb(1:2, matches(2,:));
 sampleSize = 3;
 iterationCount = 10000;
 threshDist = 10;
-inlierRatio = 0;
+inlierRatio = 0.6;
 
 [A, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio);
 [B, ~] = ransac(dataOut, dataIn, sampleSize, iterationCount, threshDist, inlierRatio);
 %% Transform image1 and image2 according to affine matrices found by RANSAC
+    
+TA = affine2d(A');
 
-newImage2 = transformImage(image2, A);
-newImage1 = transformImage(image1, B);
-
+newImage2 = imwarp(image2, TA.invert);
+newImage2_ours = transformImage(image2, A);
 %%
-subplot(1,2,1)
-imshow(image1)
-subplot(1,2,2)
+subplot(1,3,1)
+imshow(mat2gray(newImage2_ours))
+subplot(1,3,2)
 imshow(mat2gray(newImage2))
-
-figure
-subplot(1,2,1)
+subplot(1,3,3)
 imshow(image2)
-subplot(1,2,2)
-imshow(mat2gray(newImage1))
+
+% figure
+% subplot(1,2,1)
+% imshow(image2)
+% subplot(1,2,2)
+% imshow(mat2gray(newImage))
