@@ -6,11 +6,10 @@ function affineTransformation = createAffineTransformation (uv, xy)
     l = ones(size(x));
     o = zeros(size(x));
     
-    % zelf opnieuw opgesteld
     AoddRows =  [ x, y, l, o, o, o ];
     AevenRows = [ o, o, o, x, y, l ];
     A = [ AoddRows; AevenRows ];
-    b = [u; v];
+    b = [ u; v];
     x = pinv(A) * b;
     
     affineTransformation = reshape(x, 3, 2)';

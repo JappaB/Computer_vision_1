@@ -1,55 +1,30 @@
-%TODO: should be function, but is easier to program when it's not a function
-%% Load images
-clear all
-close all
-left = im2double(imread('left.jpg'));
-right = im2double(imread('right.jpg'));
+function stitchedImage = stitch(image1,image2, A, t)
+    %STITCHFUNCTION Summary of this function goes here
+    %   Detailed explanation goes here
+    [h, w, ~, ~] = calculateCanvasSize(image2, A, "stitch");
+    
+    stitchedImage = zeros(ceil(h), ceil(w), size(image2, 3));
+    
+    % Add the first image to the canvas
+    [h1, w1, ~] = size(image1);
+    stitchedImage(1:h1, 1:w1, :) = image1;
+    
+    % Add the second image to the canvas (using the supplied tranformation)
+    for x=1:w
+        for y=1:h
+            % calculate the coordinate of the pixel that would land at (x,y)
+            cord = [x; y];
+            oldCord = A \ [cord; 1];
+            oldCord = oldCord(1:2);
 
-% Convert the image to grayscale if needed and 
-% normalize range between [0,255]
-if length(size(left)) == 3
-    left_gray = single(rgb2gray(left));
-    right_gray = single(rgb2gray(right));
-else
-    left_gray = single(left);
-    right_gray = single(right);    
-end 
-%% find the features using SIFT
-% The matrix f has a column for each frame
-% A frame is a disk of center f(1:2), scale f(3) and orientation f(4)
-
-[f_left, da] = vl_sift(left_gray) ;
-[f_right, db] = vl_sift(right_gray) ;
-% matches 
-[matches, scores] = vl_ubcmatch(da, db) ;
-
-%% Find transformation Matrix
-% RANSAC
-dataIn = f_left(1:2, matches(1,:));
-dataOut = f_right(1:2, matches(2,:));
-sampleSize = 3;
-iterationCount = 10000;
-threshDist = 10;
-inlierRatio = 0;
-
-% TODO: Debug ransac
-[C, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio)
-
-%% Estimate size of new image 
-% (hint:calculate the transformed coordinates of corners of right.jpg)
-
-% H and W are the corners of the right image
-[h, w] = calculateCanvasSize(right_gray, C);
-
-% The new image is the size of the left image + the corners of the transformed 
-% right image
-CA = affine2d(C');
-newImageLeft = transformImage(right, C);
-imshow(newImageLeft)
-
-
-%% Visualize sitched image along original image pair
-% Use affine matrix to map each pixel to a new coordinate
-stitched = stitchFunction(left, right, C);
-imshow(stitched)
-
+            % Check if the coordinate was inside the canvas of the source image
+            [xdim, ydim , ~] = size(image2);
+            
+            if all(oldCord > 1) && all(oldCord < [ydim; xdim])
+                newColor = image2(round(oldCord(2)), round(oldCord(1)), :);
+                stitchedImage(y, x, :) = newColor;
+            end
+        end 
+    end
+    
+end
