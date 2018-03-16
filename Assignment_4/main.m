@@ -1,4 +1,6 @@
-%% DEMO Image Alignment
+% DEMO Image Alignment
+
+%% Load images
 clear all
 close all
 image1 = imread('boat1.pgm');
@@ -17,7 +19,7 @@ end
 % Detect features
 [fa, fb, matches] = keypoint_matching(image1_gray, image2_gray);
 
-% Plot the images with lines showing 50 random pairs
+%% Plot the images with lines showing 50 random pairs
 close all
 
 % randomly sample 50 points
@@ -50,7 +52,8 @@ for i = 1:n_points
 end
 
 hold off
-% Estimate affine transformation using RANSAC
+
+%% Estimate affine transformation using RANSAC
 dataIn = fa(1:2, matches(1,:));
 dataOut = fb(1:2, matches(2,:));
 sampleSize = 3;
@@ -60,10 +63,13 @@ inlierRatio = 0.6;
 % Set iteration count for a 99% chance of succes
 iterationCount = log(1 - 0.99) / log(1 - inlierRatio^sampleSize);
 
-% Perform ransac and visualize sample of transformed points for each
-% best iteration
-[A, ~] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio, image1, image2);
-[B, ~] = ransac(dataOut, dataIn, sampleSize, iterationCount, threshDist, inlierRatio, image2, image1);
+% Set to true to  visualize sample of transformed points for each
+% best iteration 
+visualize = false;
+
+% Perform ransac
+[A, ~] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio, image1, image2, visualize);
+[B, ~] = ransac(dataOut, dataIn, sampleSize, iterationCount, threshDist, inlierRatio, image2, image1, visualize);
 A = inv(A);
 B = inv(B);
 
@@ -102,7 +108,8 @@ imshow(mat2gray(newImage2));
 subplot(1,2,2); title('Built-in function');
 imshow(tformImage2);
 
-%% DEMO stitch.m
+% DEMO stitch.m
+%% Load images
 clear all
 close all
 left = im2double(imread('left.jpg'));
@@ -125,7 +132,7 @@ end
 % extract inidices of the matches
 [matches, scores] = vl_ubcmatch(da, db) ;
 
-% Find transformation Matrix using RANSAC
+%% Find transformation Matrix using RANSAC
 dataIn = f_left(1:2, matches(1,:));
 dataOut = f_right(1:2, matches(2,:));
 sampleSize = 3;
@@ -133,8 +140,8 @@ threshDist = 10;
 inlierRatio = 0.6;
 iterationCount = log(1 - 0.99) / log(1 - inlierRatio^sampleSize);
 
-
-[C, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio, left_gray, right_gray);
+visualize = false;
+[C, inliers] = ransac(dataIn, dataOut, sampleSize, iterationCount, threshDist, inlierRatio, left_gray, right_gray, visualize);
 
 % For some reason, our transformation matrix is inverted.
 C = inv(C);

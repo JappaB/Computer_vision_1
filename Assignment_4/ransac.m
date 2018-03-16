@@ -1,6 +1,6 @@
 %% this function is a modified version of the ransac_demo() function on wikipedia
 
-function [transformation, inliers] = ransac(dataIn, dataOut, P, N, threshDist, inlierRatio, im1, im2)
+function [transformation, inliers] = ransac(dataIn, dataOut, P, N, threshDist, inlierRatio, im1, im2, visualize)
     % dataIn: a 2xn dataset with #n input points
     % dataOut: a 2xn dataset with #n output points
     % P: the minimum number of points. For line fitting problem
@@ -64,22 +64,24 @@ function [transformation, inliers] = ransac(dataIn, dataOut, P, N, threshDist, i
             transformation = A;
             inliers = inlierIdx;
             
-            [r, c] = size(im1)
-            [r2, c2] = size(im2)
-            padr = max(0, r-r2);
-            padc = max(0, c-c2);
-            im2 = padarray(im2, [0 padc], 0, 'pre');
-            im2 = padarray(im2, [padr 0], 0, 'post');
-            size(im2)
-            figure;
-            imshow([im1 im2]);
-            hold on
-            
-            %Plot the lines
-            for j = randperm(size(xPointsTrans, 2), 20)
-                p1 = [dataIn(2, j), dataIn(1, j)];
-                p2 = [yPointsTrans(j),xPointsTrans(j)] + [0, padc + c];
-                plot([p1(2),p2(2)],[p1(1),p2(1)],'color','r','LineWidth',2);
+            if visualize
+                [r, c] = size(im1)
+                [r2, c2] = size(im2)
+                padr = max(0, r-r2);
+                padc = max(0, c-c2);
+                im2 = padarray(im2, [0 padc], 0, 'pre');
+                im2 = padarray(im2, [padr 0], 0, 'post');
+                size(im2)
+                figure;
+                imshow([im1 im2]);
+                hold on
+
+                %Plot the lines
+                for j = randperm(size(xPointsTrans, 2), 20)
+                    p1 = [dataIn(2, j), dataIn(1, j)];
+                    p2 = [yPointsTrans(j),xPointsTrans(j)] + [0, padc + c];
+                    plot([p1(2),p2(2)],[p1(1),p2(1)],'color','r','LineWidth',2);
+                end
             end
     end
 end
