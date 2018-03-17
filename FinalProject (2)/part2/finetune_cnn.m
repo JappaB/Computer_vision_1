@@ -1,8 +1,9 @@
 function [net, info, expdir] = finetune_cnn(varargin)
 
 %% Define options
-run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
+% run(fullfile(fileparts(mfilename('fullpath')), ...
+%   '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
+% ABOVE CODE ADD MatConvNet to path. We will do this manually
 
 opts.modelType = 'lenet' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
@@ -21,9 +22,6 @@ opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 
 opts.train.gpus = [1];
-
-
-
 %% update model
 
 net = update_model();
@@ -33,7 +31,7 @@ net = update_model();
 if exist(opts.imdbPath, 'file')
   imdb = load(opts.imdbPath) ;
 else
-  imdb = getCaltechIMDB() ;
+  imdb = getCaltechIMDB(50, 10) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
@@ -76,15 +74,22 @@ if rand > 0.5, images=fliplr(images) ; end
 end
 
 % -------------------------------------------------------------------------
-function imdb = getCaltechIMDB()
+function imdb = getCaltechIMDB(n_train, n_test)
 % -------------------------------------------------------------------------
 % Preapre the imdb structure, returns image data with mean image subtracted
 classes = {'airplanes', 'cars', 'faces', 'motorbikes'};
 splits = {'train', 'test'};
 
-%% TODO: Implement your loop here, to create the data structure described in the assignment
+%% Load training and test images
+[training_images, training_labels] = load_images_conv("train", n_train);
+[test_images, test_labels] = load_images_conv("test", n_test);
 
+% Concatenate training and test data
+data = cat(4, training_images, test_images);
+labels = [training_labels, test_labels];
 
+% Indicators for train/test sets
+sets = [repmat(1, size(training_labels)), repmat(2, size(test_labels))];
 %%
 % subtract mean
 dataMean = mean(data(:, :, :, sets == 1), 4);
