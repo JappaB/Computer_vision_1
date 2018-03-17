@@ -1,4 +1,4 @@
-function [h, w] = calculateCanvasSizeStitch(image_left, image_right, A, matches, inliers, f_left, f_right )
+function [h, w] = calculateCanvasSizeStitch(image, A)
 %CALCULATECANVASSIZE - calculates the canvas size of the new stitched image
 %
 % image_left is the left image, image_right is the right_image
@@ -16,14 +16,9 @@ function [h, w] = calculateCanvasSizeStitch(image_left, image_right, A, matches,
 % Find the highest index of a match between the features_left and
 % features_right
 
-
-
-
-
-
-    corners = [0 0; 0 size(image, 1); size(image, 2) 0; size(image)]';
-    newCorners = A * [ corners ; ones(1, size(corners, 2)) ];
-    h = max(newCorners(2,:)) - min(newCorners(2,:));
-    w = max(newCorners(1,:)) - min(newCorners(1,:));
+    corners = [1 1; 1 size(image, 1); size(image, 2) 1; size(image, 1) size(image, 2)]';
+    newCorners = A * [ corners ; ones(1, size(corners, 2))];
+    h = max(newCorners(2,:));
+    w = max(newCorners(1,:));
 end
 
