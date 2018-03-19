@@ -5,6 +5,9 @@ function [net, info, expdir] = finetune_cnn(varargin)
 %   '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
 % ABOVE CODE ADD MatConvNet to path. We will do this manually
 
+n_train = 500;
+n_test = 50;
+
 opts.modelType = 'lenet' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -31,7 +34,7 @@ net = update_model();
 if exist(opts.imdbPath, 'file')
   imdb = load(opts.imdbPath) ;
 else
-  imdb = getCaltechIMDB(50, 10) ;
+  imdb = getCaltechIMDB(n_train, n_test) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
