@@ -1,4 +1,4 @@
-function [net, info, expdir] = finetune_cnn(varargin)
+function [net, info, expdir] = finetune_cnn(batchSize, numEpochs, varargin)
 
 %% Define options
 % run(fullfile(fileparts(mfilename('fullpath')), ...
@@ -29,8 +29,7 @@ opts.train.gpus = [];
 
 net = update_model();
 
-%% TODO: Implement getCaltechIMDB function below
-
+% Load dataset if not available 
 if exist(opts.imdbPath, 'file')
   imdb = load(opts.imdbPath) ;
 else
@@ -39,6 +38,13 @@ else
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
 
+% Change expDir to a custom directory that marks the batch/epoch size
+modeldir = './models';
+opts.expDir = fullfile(modeldir, ...
+                       sprintf('batch-%i_epochs-%i', batchSize, numEpochs));
+if ~exist(opts.expDir)
+   mkdir(opts.expDir); 
+end
 %%
 net.meta.classes.name = imdb.meta.classes(:)' ;
 
@@ -51,7 +57,10 @@ trainfn = @cnn_train ;
   'expDir', opts.expDir, ...
   net.meta.trainOpts, ...
   opts.train, ...
-  'val', find(imdb.images.set == 2)) ;
+  'val', find(imdb.images.set == 2), ...
+  'batchSize', batchSize, ...
+  'numEpochs', numEpochs) ;
+  % [Aron] Added batch and epochs for access to opts in cnn_train
 
 expdir = opts.expDir;
 end
