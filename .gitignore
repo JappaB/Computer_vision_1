@@ -1,5 +1,8 @@
 vlfeat*/
+matconv*/
+liblin*/
 
+*.pdf
 *.png
 *.img
 *.m~
