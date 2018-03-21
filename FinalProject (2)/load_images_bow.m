@@ -1,5 +1,5 @@
-function [image_set] = load_images_bow(dataset, n)
-% Outputs a struct of the n randomly sampled images from the specified
+function [image_set, used_images] = load_images_bow(dataset, n, exclude_images)
+% Outputs a struct of the first n images from the specified
 % dataset
 %   Dataset = 'train' or 'test'
 %   n = samplesize
@@ -22,15 +22,30 @@ end
 
 %Init cell aray to store images
 image_set = {};
+
+
+%init cell aray to store the images used (so others can be used later)
+used_images = {};
+
 for i = 1:4;
     set_paths = strcat(imageSets_path,sets{i})
     
-    % randomly sample n paths to the images from this set
+
     all_from_set = importdata(set_paths, '\n');
+    
+    if nargin == 3;
+        del = exclude_images{i};
+        % Don't use previously used images (remove the previously used indices)
+        disp(del);
+        all_from_set(del) = [];
+    end
+    
+    % randomly sample n paths to the images from this set
     if length(all_from_set) < n;
         sample = all_from_set
     else
         indices = randperm(length(all_from_set),n);
+%         indices = [1:n]
         sample = all_from_set(indices)
     end
     
@@ -41,7 +56,7 @@ for i = 1:4;
         im = im2double(imread(path));
         image_set{i, j} = im;
     end
-
+    used_images{i} = indices
 end
 end
 
