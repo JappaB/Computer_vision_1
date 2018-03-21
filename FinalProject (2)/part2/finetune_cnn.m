@@ -93,6 +93,8 @@ classes = {'airplanes', 'cars', 'faces', 'motorbikes'};
 splits = {'train', 'test'};
 
 %% Load training and test images
+n_train = 500;
+n_test = 50;
 [training_images, training_labels] = load_images_conv("train", n_train);
 [test_images, test_labels] = load_images_conv("test", n_test);
 

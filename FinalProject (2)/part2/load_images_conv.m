@@ -64,5 +64,11 @@ for i = 1:4
     end
 
 end
+
+% Some indices get skipped by the loop/counter construction
+% Quickfix: just remove all data with a 0 label
+data = data(:,:,:,labels > 0);
+labels = labels(labels > 0);
+
 end
 
