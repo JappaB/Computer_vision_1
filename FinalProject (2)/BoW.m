@@ -25,24 +25,34 @@ centers = vl_ikmeans(descriptors, k, 'method', 'elkan', 'verbose');
 toc
 
 % Sample a part of the features, so k-means can converge
+%% TRAIN SVM
 
-%% Quantize Features Using Visual Vocabulary
-% other option: dsearchn (nearest neighbour)
-
+% Quantize Features Using Visual Vocabulary  
 % extract Sift descriptors again (from other images)
 samples_per_catagory2 = 10
 [image_set2, used_images2] = load_images_bow("train", samples_per_catagory, used_images)
-descriptors2 = extract_sift_features(image_set2, colorspace, dense);
 
-% Project the data to the k-means clusters
-quantized_features = vl_ikmeanspush(descriptors2, centers);
+% Initialize an empty cell array to store the hist count per catagory per
+% image
+histcounts_array = {};
+% For each catagory, for each image
+for i = 1:4;
+    for j= 1: size(image_set2,2);
+        
+        % get the descriptors
+        descriptors2 = extract_sift_features_per_image(image_set2{i,j}, colorspace, dense);
 
+        % Project the data to the k-means clusters
+        quantized_features = vl_ikmeanspush(descriptors2, centers);
 
-%% Representing images by frequencies of visual words
-% hist count (bow)
+        % Representing images by frequencies of visual words (normalized
+        % between 0 and 1)
+        normed_counts = histcounts(quantized_features,400, 'Normalization', 'probability');
 
-
-
-%% Classification (SVM)
+        histcounts_array{i,j} = normed_counts;
+        
+    end
+end
+%% Train SVM
 
 %% Evaluation 

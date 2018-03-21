@@ -14,15 +14,18 @@ for i= 1: size(image_set,1)
 
         % Grayscale image needed to extract keypoints
         image = image_set{i,j};
-        image_gray = rgb2gray(image); 
-
+        if length(size(image)) == 3;
+            image_gray = rgb2gray(image); 
+        else
+            image_gray = image
+        end
         % If the desired colorspace is gray, add to features array and
         % continue
         if strcmp(colorspace, 'gray');
 
             % Extract feature descriptors
             if dense == true;
-                [f, d] = vl_sift(single(image_gray));
+                [f, d] = vl_dsift(single(image_gray));
                 features = [features d];  
                 
             else
