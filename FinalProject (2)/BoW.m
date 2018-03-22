@@ -27,7 +27,7 @@ toc
 % Sample a part of the features, so k-means can converge
 %% Load unseen images for training
 
-n_samples = 20;
+n_samples = 50;
 [training_set, ~] = load_images_bow("train", n_samples, used_images);
 [test_set, ~] = load_images_bow("test", 50, cell(1,4));
 
@@ -37,10 +37,11 @@ n_samples = 20;
 
 %% Train SVM (per class)
 
-classifiers = [];
-for class = [1]
+predictions = [];
+for class = [1 2 3 4]
     model = train(double(training_labels == class), sparse(training_features), '-s 0');
-    classifiers = [classifiers model];
+    [~,~,probs] = predict(double(test_labels == class), sparse(test_features), model);
+    predictions = [predictions probs];
 end
 
 %% Evaluation 
