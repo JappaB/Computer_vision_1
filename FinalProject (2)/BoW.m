@@ -25,7 +25,7 @@ centers = vl_ikmeans(descriptors, k, 'method', 'elkan', 'verbose');
 toc
 
 % Sample a part of the features, so k-means can converge
-%% TRAIN SVM
+%% Quantize features and represent image by frequencies
 
 % Quantize Features Using Visual Vocabulary  
 % extract Sift descriptors again (from other images)
@@ -53,6 +53,20 @@ for i = 1:4;
         
     end
 end
-%% Train SVM
+%% Train SVM (per class)
+%nX400 feature vector and a nx1 (met [1-4]) label vector
+
+% Unpack histcounts
+
+[predictions, accuracy] = get_predictions(data)
+
+best = train(data.trainset.labels, data.trainset.features, '-C -s 0');
+model = train(data.trainset.labels, data.trainset.features, sprintf('-c %f -s 0', best(1))); % use the same solver: -s 0
+[predictions, accuracy, ~] = predict(data.testset.labels, data.testset.features, model);
+
+
+end
+
+
 
 %% Evaluation 
