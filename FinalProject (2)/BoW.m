@@ -39,9 +39,20 @@ n_samples = 50;
 
 predictions = [];
 for class = [1 2 3 4]
-    model = train(double(training_labels == class), sparse(training_features), '-s 0');
-    [~,~,probs] = predict(double(test_labels == class), sparse(test_features), model);
-    predictions = [predictions probs];
-end
 
+    % Shuffle data
+    new_order = randperm(size(training_features, 1));
+    training_labels = training_labels(new_order);
+    training_features = training_features(new_order,:);
+    
+    while training_labels(1,1) == class
+        new_order = randperm(size(training_features, 1));
+        training_labels = training_labels(new_order);
+        training_features = training_features(new_order,:);
+    end
+    
+    model = train(double(training_labels == class), sparse(training_features), '-s 0');
+    [preds,~,probs] = predict(double(test_labels == class), sparse(test_features), model, '-b 1');
+    predictions = [predictions probs(:,2)];
+end
 %% Evaluation 
