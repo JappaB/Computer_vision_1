@@ -1,9 +1,12 @@
-function [net, info, expdir] = finetune_cnn(varargin)
+function [net, info, expdir] = finetune_cnn(batchSize, numEpochs, varargin)
 
 %% Define options
 % run(fullfile(fileparts(mfilename('fullpath')), ...
 %   '..', '..', '..', 'matlab', 'vl_setupnn.m')) ;
 % ABOVE CODE ADD MatConvNet to path. We will do this manually
+
+n_train = 500;
+n_test = 50;
 
 opts.modelType = 'lenet' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
@@ -21,21 +24,27 @@ opts.train = struct() ;
 opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 
-opts.train.gpus = [1];
+opts.train.gpus = [];
 %% update model
 
 net = update_model();
 
-%% TODO: Implement getCaltechIMDB function below
-
+% Load dataset if not available 
 if exist(opts.imdbPath, 'file')
   imdb = load(opts.imdbPath) ;
 else
-  imdb = getCaltechIMDB(50, 10) ;
+  imdb = getCaltechIMDB(n_train, n_test) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
 
+% Change expDir to a custom directory that marks the batch/epoch size
+modeldir = './models';
+opts.expDir = fullfile(modeldir, ...
+                       sprintf('batch-%i_epochs-%i', batchSize, numEpochs));
+if ~exist(opts.expDir)
+   mkdir(opts.expDir); 
+end
 %%
 net.meta.classes.name = imdb.meta.classes(:)' ;
 
@@ -48,7 +57,10 @@ trainfn = @cnn_train ;
   'expDir', opts.expDir, ...
   net.meta.trainOpts, ...
   opts.train, ...
-  'val', find(imdb.images.set == 2)) ;
+  'val', find(imdb.images.set == 2), ...
+  'batchSize', batchSize, ...
+  'numEpochs', numEpochs) ;
+  % [Aron] Added batch and epochs for access to opts in cnn_train
 
 expdir = opts.expDir;
 end

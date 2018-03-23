@@ -26,9 +26,10 @@ centers = vl_ikmeans(descriptors, k, 'method', 'elkan', 'verbose');
 toc
 
 
+
 %% Quantize features and represent image by frequencies
 
-% Quantize Features Using Visual Vocabulary  
+% Quantize Features Using Visual Vocabulary
 % extract Sift descriptors again (from other images)
 samples_per_catagory2 = 10
 [image_set2, used_images2] = load_images_bow("train", samples_per_catagory, used_images)
@@ -39,25 +40,34 @@ histcounts_array = {};
 % For each catagory, for each image
 for i = 1:4;
     for j= 1: size(image_set2,2);
-        
+
         % get the descriptors
         descriptors2 = extract_sift_features_per_image(image_set2{i,j}, colorspace, dense);
 
-        % Project the data to the k-means clusters
-        quantized_features = vl_ikmeanspush(descriptors2, centers);
+% Sample a part of the features, so k-means can converge
+%% Load unseen images for training
 
-        % Representing images by frequencies of visual words (normalized
-        % between 0 and 1)
-        normed_counts = histcounts(quantized_features,400, 'Normalization', 'probability');
 
-        histcounts_array{i,j} = normed_counts;
-        
-    end
-end
+n_samples = 50;
+[training_set, ~] = load_images_bow("train", n_samples, used_images);
+[test_set, ~] = load_images_bow("test", 50, cell(1,4));
+
+%% Quantize features and represent image by frequencies
+[training_features, training_labels] = create_binary_dataset(training_set, centers, colorspace, dense);
+[test_features, test_labels] = create_binary_dataset(test_set, centers, colorspace, dense);
+
 %% Train SVM (per class)
+
 %nX400 feature vector and a nx1 (met [1-4]) label vector
 
 
 
+predictions = [];
+for class = [1 2 3 4]
+    model = train(double(training_labels == class), sparse(training_features), '-s 0');
+    [~,~,probs] = predict(double(test_labels == class), sparse(test_features), model);
+    predictions = [predictions probs];
+end
 
-%% Evaluation 
+
+%% Evaluation
