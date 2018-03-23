@@ -4,17 +4,18 @@ clear all
 close all
 
 
-samples_per_catagory = 10
+samples_per_catagory = 50
 [image_set, used_images] = load_images_bow("train", samples_per_catagory)
 
 %https://dsp.stackexchange.com/questions/14616/what-is-the-output-of-bow-after-an-image-has-been-trained-with-sift-algorithm-an
 
 %% Get Sift descriptors
 
-colorspace = "gray";
-dense = false;
+colorspace = "opponent";
+dense = true;
+tic
 descriptors = extract_sift_features(image_set, colorspace, dense);
-
+toc
 %% Build Visual Vocabulary
 k = 400;
 
@@ -24,7 +25,7 @@ tic
 centers = vl_ikmeans(descriptors, k, 'method', 'elkan', 'verbose');
 toc
 
-% Sample a part of the features, so k-means can converge
+
 %% Quantize features and represent image by frequencies
 
 % Quantize Features Using Visual Vocabulary  
@@ -56,16 +57,6 @@ end
 %% Train SVM (per class)
 %nX400 feature vector and a nx1 (met [1-4]) label vector
 
-% Unpack histcounts
-
-[predictions, accuracy] = get_predictions(data)
-
-best = train(data.trainset.labels, data.trainset.features, '-C -s 0');
-model = train(data.trainset.labels, data.trainset.features, sprintf('-c %f -s 0', best(1))); % use the same solver: -s 0
-[predictions, accuracy, ~] = predict(data.testset.labels, data.testset.features, model);
-
-
-end
 
 
 
