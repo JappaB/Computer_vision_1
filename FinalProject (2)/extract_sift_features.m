@@ -25,7 +25,7 @@ for i= 1: size(image_set,1)
 
             % Extract feature descriptors
             if dense == true;
-                [f, d] = vl_dsift(single(image_gray));
+                [f, d] = vl_dsift(single(image_gray), 'step', 10);
                 features = [features d];  
                 
             else
@@ -42,6 +42,8 @@ for i= 1: size(image_set,1)
 
             % Default is rgb
             % else: change color space
+            %TODO: check funtions color spaces
+            %TODO: 
             if strcmp(colorspace, 'opponent')                
                 image = rgb2opponent(image); 
             elseif strcmp(colorspace, 'RGB');
@@ -58,7 +60,7 @@ for i= 1: size(image_set,1)
                 for k = 1:3                    
                     % Extract channel
                     channel = single(image(:,:,k));
-                    [f, d] = vl_dsift(channel,'step',10);
+                    [f, d] = vl_dsift(channel, 'step',10);
                     combined_channels = cat(1,combined_channels, d);
                 end
 
