@@ -5,7 +5,7 @@ function [features] = extract_sift_features(image_set,colorspace,dense)
 %   features.
 
 % Initialize an empty matrix to store the features
-features = []
+features = [];
 % for all imagesets
 for i= 1: size(image_set,1)
     % for all images

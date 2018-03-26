@@ -16,7 +16,7 @@ dense = false;
 descriptors = extract_sift_features(image_set, colorspace, dense);
 
 %% Build Visual Vocabulary
-k = 400;
+k = 50;
 
 % Tic toc to time how long it takes to run
 tic

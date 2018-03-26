@@ -15,12 +15,12 @@ clear all
 close all
 
 % Run everything for gray, use the rest for the colors
-% for n_training_samples = [50,100,250,200]
-%     for k = [400, 800, 1600, 2000, 4000]
-%         for dense = [false, true]
-for n_training_samples = [50]
-    for k = [400]
-        for dense = [false]    
+for n_training_samples = [50,100,250,200]
+    for k = [400, 800, 1600, 2000, 4000]
+        for dense = [false, true]
+% for n_training_samples = [50]
+%     for k = [400]
+%         for dense = [false]    
             % Extract images
             [image_set, used_images] = load_images_bow("train", n_training_samples);
 
@@ -30,7 +30,7 @@ for n_training_samples = [50]
 
             tic
             descriptors = extract_sift_features(image_set, colorspace, dense);
-            time_extract_features = toc
+            time_extract_features = toc;
 
 
             tic
@@ -75,6 +75,10 @@ for n_training_samples = [50]
 
             filename = sprintf('accuracies/n-%i_k-%i_dense-%i.mat', n_training_samples, k, dense);
             save(filename, '-mat', 'accuracies');
+            
+            times = [time_extract_features, time_to_cluster] 
+            filename = sprintf('times/n-%i_k-%i_dense-%i.mat', n_training_samples, k, dense);
+            save(filename, '-mat', 'times');
         end
     end
 end
