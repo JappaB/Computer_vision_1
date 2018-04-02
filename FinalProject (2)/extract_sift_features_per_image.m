@@ -5,7 +5,7 @@ function [features] = extract_sift_features(image,colorspace,dense)
 %   features.
 
 % Initialize an empty matrix to store the features
-features = []
+features = [];
 
 %unpack image
 
@@ -21,7 +21,7 @@ if strcmp(colorspace, 'gray');
 
     % Extract feature descriptors
     if dense == true;
-        [f, d] = vl_dsift(single(image_gray));
+        [f, d] = vl_dsift(single(image_gray), 'step', 20);
         features = [features d];
 
     else
@@ -54,7 +54,7 @@ if length(size(image)) == 3;
         for k = 1:3                    
             % Extract channel
             channel = single(image(:,:,k));
-            [f, d] = vl_dsift(channel,'step',10);
+            [f, d] = vl_dsift(channel,'step',20);
             combined_channels = cat(1,combined_channels, d);
         end
 
