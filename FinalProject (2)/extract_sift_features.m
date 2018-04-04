@@ -14,17 +14,17 @@ for i= 1: size(image_set,1)
 
         % Grayscale image needed to extract keypoints
         image = image_set{i,j};
-        if length(size(image)) == 3;
+        if length(size(image)) == 3
             image_gray = rgb2gray(image); 
         else
-            image_gray = image
+            image_gray = image;
         end
         % If the desired colorspace is gray, add to features array and
         % continue
-        if strcmp(colorspace, 'gray');
+        if strcmp(colorspace, 'gray')
 
             % Extract feature descriptors
-            if dense == true;
+            if dense == true
                 [f, d] = vl_dsift(single(image_gray), 'step', 20);
                 features = [features d];  
                 
@@ -38,7 +38,7 @@ for i= 1: size(image_set,1)
         end
 
         % Only colored pictures can be used for the RGB,rgb,opponent SIFT
-        if length(size(image)) == 3;
+        if length(size(image)) == 3
 
             % Default is rgb
             % else: change color space
@@ -46,15 +46,15 @@ for i= 1: size(image_set,1)
             %TODO: 
             if strcmp(colorspace, 'opponent')                
                 image = rgb2opponent(image); 
-            elseif strcmp(colorspace, 'RGB');
+            elseif strcmp(colorspace, 'RGB')
                 % do nothing
-            elseif strcmp(colorspace, 'normalized_rgb');
+            elseif strcmp(colorspace, 'normalized_rgb')
                 image = rgb2normedrgb(image);
             end
 
 
             % Extract the keypoints
-            if dense == true;
+            if dense == true
                 combined_channels = [];
                 
                 for k = 1:3                    
