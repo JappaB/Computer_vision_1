@@ -21,12 +21,12 @@ close all
 % end
 
 % Run everything for gray, use the rest for the colors
-for n_training_samples = [250,200]
-    for k = [400, 800, 1600, 2000, 4000]
+for k = [400, 800, 1600, 2000, 4000]
+    for n_training_samples = [200, 250]
         for dense = [false, true]
             
             if n_training_samples == 250
-                if sum(k == [400 800]) == 1
+                if sum(k == [400 800 1600 2000]) == 1
                     continue
                 end
                 if k == 1600 && dense == false
