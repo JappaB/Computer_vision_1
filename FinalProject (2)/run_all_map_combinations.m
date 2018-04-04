@@ -24,7 +24,7 @@ close all
 % dense = false;
 % n_training_samples = 50;
 % colorspace = "gray";
-% for k = [400 800 1600 2000]
+% for k = [800 1600 2000]
 %    train_and_save_svm(n_training_samples, k, colorspace, dense, 500);
 % end
 
@@ -33,7 +33,7 @@ close all
 k = 400;
 dense = false;
 colorspace = "gray";
-for n_training_samples = [ 50 100 200 250 ]
+for n_training_samples = [ 100 200 250 ]
     train_and_save_svm(n_training_samples, k, colorspace, dense);
 end
 
@@ -42,6 +42,6 @@ end
 k = 400;
 n_training_samples = 50;
 dense = false;
-for colorspace = ["gray", "opponent", "RGB", "normalized_rgb"]
+for colorspace = ["opponent", "RGB", "normalized_rgb"]
     train_and_save_svm(n_training_samples, k, colorspace, dense);
 end
