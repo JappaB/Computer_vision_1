@@ -1,7 +1,7 @@
 % Run all
 % Hyperparameters
 
-% colorspaces = ["gray", "opponent", "RGB", "normalized_rgb"] 
+% colorspaces = ["gray", "opponent", "RGB", "normalized_rgb"]
 
 vl_threads
 %kernel_choices = ["linear", 'rbf']
@@ -13,9 +13,9 @@ vl_threads
 
 clear all
 close all
-% 
+%
 % runAt = datetime(2018, 3, 30, 23, 59, 0);
-% 
+%
 % while datetime < runAt
 %     ;
 % end
@@ -24,7 +24,7 @@ close all
 for k = [400, 800, 1600, 2000, 4000]
     for n_training_samples = [200, 250]
         for dense = [false, true]
-            
+
             if n_training_samples == 250
                 if sum(k == [400 800 1600 2000]) == 1
                     continue
@@ -35,8 +35,16 @@ for k = [400, 800, 1600, 2000, 4000]
             end
 % for n_training_samples = [50]
 %     for k = [400]
-%         for dense = [false]    
+%         for dense = [false]
             % Extract images
+
+            if n_training_samples == 100 & (k == 400 | k == 800);
+                disp(n_training_samples)
+                disp(k)
+                continue
+
+            end
+
             [image_set, used_images] = load_images_bow("train", n_training_samples);
 
             colorspace = "gray";
@@ -49,11 +57,11 @@ for k = [400, 800, 1600, 2000, 4000]
 
 
             tic
-            % Cluster    
+            % Cluster
             % use elkan to speed up
             centers = vl_ikmeans(descriptors, k, 'method', 'elkan', 'verbose');
             time_to_cluster = toc
-            
+
             [training_set, ~] = load_images_bow("train", n_training_samples, used_images);
             [test_set, ~] = load_images_bow("test", 50, cell(1,4));
 
@@ -65,7 +73,7 @@ for k = [400, 800, 1600, 2000, 4000]
 
             predictions = [];
             accuracies = [];
-            
+
             for class = [1 2 3 4]
 
                 % Shuffle data
@@ -84,17 +92,18 @@ for k = [400, 800, 1600, 2000, 4000]
                 predictions = [predictions probs(:,2)];
                 accuracies = [accuracies acc];
             end
-            
+
+
             filename = sprintf('predictions/stride-20_n-%i_k-%i_dense-%i.mat', n_training_samples, k, dense);
             save(filename, '-mat', 'predictions');
 
             filename = sprintf('accuracies/stride-20_n-%i_k-%i_dense-%i.mat', n_training_samples, k, dense);
             save(filename, '-mat', 'accuracies');
-            
-            times = [time_extract_features, time_to_cluster] 
+
+            times = [time_extract_features, time_to_cluster]
             filename = sprintf('times/stride-20_n-%i_k-%i_dense-%i.mat', n_training_samples, k, dense);
+
             save(filename, '-mat', 'times');
         end
     end
 end
-    
