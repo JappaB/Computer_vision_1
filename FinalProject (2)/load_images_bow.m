@@ -41,16 +41,15 @@ for i = 1:4;
     end
     
     % randomly sample n paths to the images from this set
-    if length(all_from_set) < n;
+    if length(all_from_set) < n
         sample = all_from_set
     else
-        indices = randperm(length(all_from_set),n);
-%         indices = [1:n]
-        sample = all_from_set(indices)
+        indices = 1:n;
+        sample = all_from_set(indices);
     end
     
     % Load the images and stack them in an array
-    for j = 1 : length(sample);
+    for j = 1 : length(sample)
         % First create the full path from curr dir
         path = strcat(fullfile(train_image_path,sample{j}),'.jpg');
         im = im2double(imread(path));
