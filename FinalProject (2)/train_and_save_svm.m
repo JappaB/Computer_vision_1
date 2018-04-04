@@ -53,7 +53,10 @@ function train_and_save_svm(n_training_samples, k, colorspace, dense, maxiters)
         filename = sprintf('models/stride-20_n-%i_k-%i_dense-%i_colorspace-%s-class-%i.mat', n_training_samples, k, dense, colorspace, class);
         save(filename, '-mat', 'model');
     end
-
+    
+    AP = average_precision(predictions, binary_test_labels);
+    filename = sprintf('average_precision/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
+    save(filename, '-mat', 'AP');
 
     filename = sprintf('predictions/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'predictions');
