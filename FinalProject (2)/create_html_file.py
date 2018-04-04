@@ -42,18 +42,20 @@ def create_html_meta_table(model_name):
 
     return result
 
-def create_html_table_header(avg_p):
+def create_html_table_header(model_name):
     # TODO: read avg_p values
 
     result = f"<thead><tr><th>Airplanes (AP: {avg_p[0]})</th><th>Cars (AP: {avg_p[1]})</th><th>Faces (AP: {avg_p[2]})</th><th>Motorbikes (AP: {avg_p[3]})</th></tr></thead>"
 
     return result
 
-def create_html_table_title(mAP):
+def create_html_table_title(model_name):
+    # TODO: read avg_p values and calculate MAP
+
     result = f"<h1>Prediction lists (MAP: {mAP})</h1>"
     return result
 
-def create_page(model_name, mAP, avg_precision):
+def create_page(model_name):
     result = "<!DOCTYPE html>\
     <html lang=\"en\">\
       <head>\
@@ -70,11 +72,11 @@ def create_page(model_name, mAP, avg_precision):
     <h1>Settings</h1>"
 
     result += create_html_meta_table(model_name)
-    result += create_html_table_title(mAP)
+    result += create_html_table_title(model_name)
     result += "<h3><font color=\"red\">Following are the ranking lists for the four categories. Please fill in your lists.</font></h3>\
     <h3><font color=\"red\">The length of each column should be 200 (containing all test images).</font></h3>"
     result += "<table>"
-    result += create_html_table_header(avg_precision)
+    result += create_html_table_header(model_name)
     result += create_html_table_body(rank_paths(model_name))
     result += "</table>\
       </body>\
