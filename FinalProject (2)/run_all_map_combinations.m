@@ -32,14 +32,14 @@ close all
 
 % @ JAPSER: ALLEN HIERONDER RUNNEN, IK RUN DE BOVENSTE TWEE
 % Vary n
-k = 400;
-dense = false;
-colorspace = "gray";
-
-% n = 50 has already been run in this setting
-for n_training_samples = [ 100 200 250 ]
-    train_and_save_svm(n_training_samples, k, colorspace, dense);
-end
+% k = 400;
+% dense = false;
+% colorspace = "gray";
+% 
+% % n = 50 has already been run in this setting
+% for n_training_samples = [ 100 200 250 ]
+%     train_and_save_svm(n_training_samples, k, colorspace, dense);
+% end
 
 
 % Vary Colorspace
@@ -48,6 +48,6 @@ n_training_samples = 50;
 dense = false;
 
 % colorspace gray has already been run in this setting
-for colorspace = ["opponent", "RGB", "normalized_rgb"]
-    train_and_save_svm(n_training_samples, k, colorspace, dense);
+for colorspace = ["gray","opponent", "RGB", "normalized_rgb"]
+    train_and_save_bonus_parts(n_training_samples, k, colorspace, dense)
 end
