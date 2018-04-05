@@ -28,6 +28,8 @@ function train_and_save_svm(n_training_samples, k, colorspace, dense, maxiters)
     predictions = [];
     accuracies = [];
     binary_test_labels = [];
+    
+    
 
     for class = [1 2 3 4]
 
