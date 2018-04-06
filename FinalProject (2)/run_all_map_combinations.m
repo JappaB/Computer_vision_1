@@ -47,6 +47,6 @@ k = 800;
 n_training_samples = 100;
 dense = true;
 % colorspace gray has already been run in this setting
-for colorspace = ["opponent", "RGB", "normalized_rgb","gray"]
+for colorspace = ["gray", "normalized_rgb", "RGB", "opponent"]
     train_and_save_svm(n_training_samples, k, colorspace, dense);
 end

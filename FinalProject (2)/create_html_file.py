@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.io
+import os
 
 def rank_paths(model_name):
     image_folders = ['../Caltech4/ImageData/airplanes_test', '../Caltech4/ImageData/cars_test',
@@ -91,3 +92,8 @@ def create_page(model_name):
         f.write(result)
 
 create_page('stride-20_n-50_k-400_dense-0_colorspace-gray')
+
+for file in os.listdir('predictions/'):
+    if file.endswith('.mat') and file not in os.listdir('html/'):
+        model_name = file.split('.')[0]
+        create_page(model_name)
