@@ -36,7 +36,12 @@ def create_html_table_body(ranked_paths):
 
 def create_html_meta_table(model_name):
     with_string = model_name.split("_")
-    settings = {x.split("-")[0] : x.split("-")[1] for x in with_string}
+
+    settings = {}
+    for x in with_string:
+        split = x.split("-")
+        if len(split) == 2:
+            settings[split[0]] = split[1]
     settings['dense'] = "DENSE" if settings['dense'] == "1" else "KEYPOINT"
 
     result = f"<table><tr><th>SIFT step size</th><td>{settings['stride']} px</td></tr><tr><th>SIFT block sizes</th><td>3 pixels</td></tr><tr><th>SIFT method</th><td>{settings['dense']}-SIFT</td></tr><tr><th>Vocabulary size</th><td>{settings['k']} words</td></tr><tr><th>Vocabulary fraction</th><td>1</td></tr><tr><th>SVM training data</th><td>{settings['n']} positive, 50 negative per class</td></tr><tr><th>SVM kernel type</th><td>Linear</td></tr></table>"
@@ -94,6 +99,8 @@ def create_page(model_name):
 create_page('stride-20_n-50_k-400_dense-0_colorspace-gray')
 
 for file in os.listdir('predictions/'):
-    if file.endswith('.mat') and file not in os.listdir('html/'):
+    if file.endswith('.mat'):
         model_name = file.split('.')[0]
-        create_page(model_name)
+        if model_name + '.html' not in os.listdir('html/'):
+            create_page(model_name)
+            print(model_name)

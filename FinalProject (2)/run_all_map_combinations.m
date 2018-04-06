@@ -39,7 +39,14 @@ colorspace = "gray";
 for n_training_samples = [ 100 200 250 ]
     train_and_save_svm(n_training_samples, k, colorspace, dense);
 end
+%%
 
+dense = 0;
+k = 800;
+n = 100;
+colorspace="gray";
+
+train_and_save_svm(n, k, colorspace, dense);
 
 %% MSER -----
 k = 400;
