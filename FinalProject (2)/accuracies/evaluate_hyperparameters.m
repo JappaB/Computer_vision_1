@@ -5,12 +5,12 @@
 % paths = ["accuracies/*","predictions/*","times/*"];
 %Load all variables
 clear all
-files = dir('stride-*.mat');
+files = dir('archive/stride-*.mat');
 best_model.filename = "";
 best_model.accuracy = 0;
 
 for j = 1:size(files,1)
-    model = load(files(j).name);
+    model = load(fullfile('archive',files(j).name));
     accuracies = model.accuracies;
     avg_accuracy = mean(accuracies(1,:));
     

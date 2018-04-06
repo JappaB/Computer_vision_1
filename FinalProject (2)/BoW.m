@@ -4,10 +4,10 @@ clear all
 close all
 
 
+% Small sample for fast execution
 samples_per_catagory = 10
 [image_set, used_images] = load_images_bow("train", samples_per_catagory)
 
-%https://dsp.stackexchange.com/questions/14616/what-is-the-output-of-bow-after-an-image-has-been-trained-with-sift-algorithm-an
 
 %% Get Sift descriptors
 
@@ -55,4 +55,3 @@ for class = [1 2 3 4]
     [preds,~,probs] = predict(double(test_labels == class), sparse(test_features), model, '-b 1');
     predictions = [predictions probs(:,2)];
 end
-%% Evaluation 

@@ -10,7 +10,10 @@ function X = reduce_features( data, path_to_net )
     % loaded setting requires labels
     net.layers{end}.type = 'softmax';
     
+    % get final layer activations 
     [training, test] = get_svm_data(data, net);
+    
+    % concatenate features
     features = [training.features; test.features];
     labels = [training.labels; test.labels];
 

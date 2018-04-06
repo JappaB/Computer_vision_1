@@ -1,3 +1,5 @@
+% NOTE: moved this to seperate function so it can be called from
+% anywhere in the project
 function [trainset, testset] = get_svm_data(data, net)
 
 trainset.labels = [];

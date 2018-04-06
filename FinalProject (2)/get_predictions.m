@@ -1,4 +1,5 @@
 %SVM TRAINING
+% copied from train_svm in part2
 function [predictions, accuracy] = get_predictions(data)
 
 best = train(data.trainset.labels, data.trainset.features, '-C -s 0');

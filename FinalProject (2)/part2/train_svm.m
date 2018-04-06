@@ -19,6 +19,8 @@ fprintf('CNN: fine_tuned_accuracy: %0.2f, SVM: pre_trained_accuracy: %0.2f, fine
 
 end
 
+% NOTE: moved get_svm_data to seperate function so it can be called from
+% anywhere in the project
 
 function [accuracy] = get_nn_accuracy(net, data)
 

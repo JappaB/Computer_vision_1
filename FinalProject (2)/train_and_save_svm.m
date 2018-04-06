@@ -56,23 +56,29 @@ function train_and_save_svm(n_training_samples, k, colorspace, dense, maxiters)
         save(filename, '-mat', 'model');
     end
     
+    % Save AP
     AP = average_precision(predictions, binary_test_labels);
     filename = sprintf('average_precision/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'AP');
 
+    % Save predictions
     filename = sprintf('predictions/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'predictions');
 
+    % Save accuracies
     filename = sprintf('accuracies/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'accuracies');
     
+    % Save test labels
     filename = sprintf('labels/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'binary_test_labels');
 
+    % Save execution times
     times = [time_extract_features, time_to_cluster];
     filename = sprintf('times/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'times');
     
+    % Save features
     all_features = {training_features,training_labels,test_features,test_labels}
     filename = sprintf('features/stride-20_n-%i_k-%i_dense-%i_colorspace-%s.mat', n_training_samples, k, dense, colorspace);
     save(filename, '-mat', 'all_features');

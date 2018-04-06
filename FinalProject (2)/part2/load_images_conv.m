@@ -48,8 +48,6 @@ for i = 1:4
         im = single(im2double(imread(path)));
         
         % Resize the image to 32x32 as needed for pretrained model
-        % TODO: Experiment with smart ways to do this (bonus)
-        % (ex. preserve aspect ratio and crop in different places)
         im = imresize(im, [32 32]);
         
         % Repeat 1-channel images 3 times in the 3rd dimension

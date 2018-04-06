@@ -1,15 +1,8 @@
 % Run all
 % Hyperparameters
 
-% colorspaces = ["gray", "opponent", "RGB", "normalized_rgb"]
-
 vl_threads
-%kernel_choices = ["linear", 'rbf']
 
-% BONUS TODO: we kunnen nog harris corner features gebruiken => is slechter maar
-% sneller => tic toc opslaan
-
-% BONUS TODO: nog k-neares neighbour ipv k-means: https://nl.mathworks.com/help/stats/knnsearch.html
 
 clear all
 close all
@@ -24,26 +17,6 @@ close all
 % for k = [400, 800, 1600, 2000, 4000]
 %     for n_training_samples = [200, 250]
 %         for dense = [false, true]
-% 
-%             if n_training_samples == 250
-%                 if sum(k == [400 800 1600 2000]) == 1
-%                     continue
-%                 end
-%                 if k == 1600 && dense == false
-%                     continue
-%                 end
-%             end
-% % for n_training_samples = [50]
-% %     for k = [400]
-% %         for dense = [false]
-%             % Extract images
-% 
-%             if n_training_samples == 100 & (k == 400 | k == 800);
-%                 disp(n_training_samples)
-%                 disp(k)
-%                 continue
-% 
-%             end
 for colorspace = ["opponent", "RGB", "normalized_rgb"]
     %best hyperparameters
     n_training_samples = 100;

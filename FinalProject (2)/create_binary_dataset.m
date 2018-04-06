@@ -17,8 +17,7 @@ for i = 1:size(image_set, 1)
         % Project the data to the k-means clusters
         quantized_features = vl_ikmeanspush(descriptors, centers);
 
-        % Representing images by frequencies of visual words (normalized
-        % between 0 and 1)
+        % Histogram of visual words (normalized by count)
         normed_counts = histcounts(quantized_features, size(centers, 2), 'Normalization', 'count');
 
         features = [features; normed_counts];

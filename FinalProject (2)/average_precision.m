@@ -1,5 +1,7 @@
 function AP = average_precision(predictions, labels)
-   
+    %AVERAGE_PRECISION calculate the average precision by ranking the
+    %predictions in descending order
+    
     % needed for vl_pr
     labels(labels == 0) = -1;
     

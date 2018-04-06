@@ -1,5 +1,5 @@
-function [features, labels] = create_binary_dataset_MSER( image_set, centers, colorspace, dense )
-    %CREATE_BINARY_DATASET matrix containing the sift features for
+function [features, labels] = create_binary_dataset_MSER( image_set, centers, colorspace )
+    %CREATE_BINARY_DATASET matrix containing the MSER features for
     % the images in image_set
     % Quantize Features Using Visual Vocabulary  
 
@@ -12,7 +12,7 @@ for i = 1:size(image_set, 1)
     for j= 1:size(image_set, 2)
         
         % get the descriptors
-        descriptors = extract_sift_features_per_image(image_set{i,j}, colorspace, dense);
+        descriptors = extract_MSER_features_per_image(image_set{i,j}, colorspace);
 
         % Project the data to the k-means clusters
         quantized_features = vl_ikmeanspush(descriptors, centers);

@@ -1,4 +1,4 @@
-function [features] = extract_sift_features(image,colorspace,dense)
+function [features] = extract_sift_features_per_image(image,colorspace,dense)
 % Extracts the sift features for the given image 
 %   colorspace can be none (default = RGB), 'opponent','rgb' or 'gray' 
 %   dense is either true or false. True indicates densely extracted
@@ -7,69 +7,58 @@ function [features] = extract_sift_features(image,colorspace,dense)
 % Initialize an empty matrix to store the features
 features = [];
 
-%unpack image
-
 % Grayscale image needed to extract keypoints
-if length(size(image)) == 3;
+if length(size(image)) == 3
     image_gray = rgb2gray(image);
 else
-    image_gray = image
+    image_gray = image;
 end
 % If the desired colorspace is gray, add to features array and
 % continue
-if strcmp(colorspace, 'gray');
+if strcmp(colorspace, 'gray')
 
     % Extract feature descriptors
-    if dense == true;
-        [f, d] = vl_dsift(single(image_gray), 'step', 20);
+    if dense == true
+        [~, d] = vl_dsift(single(image_gray), 'step', 20);
         features = [features d];
 
     else
-        [f, d] = vl_sift(single(image_gray));
+        [~, d] = vl_sift(single(image_gray));
         features = [features d];
     end
 
-    return
-
-end
-
-% Only colored pictures can be used for the RGB,rgb,opponent SIFT
-if length(size(image)) == 3;
-
+else
     % Default is rgb
     % else: change color space
     if strcmp(colorspace, 'opponent')                
         image = rgb2opponent(image); 
-    elseif strcmp(colorspace, 'RGB');
-        % do nothing
-    elseif strcmp(colorspace, 'normalized_rgb');
+    elseif strcmp(colorspace, 'normalized_rgb')
         image = rgb2normedrgb(image);
     end
 
-
     % Extract the keypoints
-    if dense == true;
+    if dense == true
         combined_channels = [];
 
         for k = 1:3                    
             % Extract channel
             channel = single(image(:,:,k));
-            [f, d] = vl_dsift(channel,'step',20);
+            [~, d] = vl_dsift(channel,'step',20);
             combined_channels = cat(1,combined_channels, d);
         end
 
     else
         im = single(image_gray);
-        [f, d] = vl_sift(im);
+        [f, ~] = vl_sift(im);
 
-        % If the desired colorspace is not gray, do vl_sift on all
-        % seperate color channels
+        % If the desired colorspace is not gray, describe
+        % the regions per color channel and concatenate
         combined_channels = [];
-        for k = 1:3;
+        for k = 1:3
             % Extract channel
             channel = single(image(:,:,k));
 
-            % Follow VL_Feat documentation on how to extract grad
+            % Follow VL_Feat documentation on how to compute grad
             I_       = vl_imsmooth(im2double(channel), sqrt(f(3)^2 - 0.5^2));
             [Ix, Iy] = vl_grad(I_);
             mod      = sqrt(Ix.^2 + Iy.^2);
