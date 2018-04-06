@@ -43,10 +43,10 @@ close all
 
 
 % Vary Colorspace
-k = 800;
-n_training_samples = 100;
+k = 400;
+n_training_samples = 50;
 dense = true;
 % colorspace gray has already been run in this setting
-for colorspace = ["normalized_rgb","gray"]
-    train_and_save_bonus_parts(n_training_samples, k, colorspace, dense);
+for colorspace = ["RGB","opponent","normalized_rgb","gray"]
+    train_and_save_svm(n_training_samples, k, colorspace, dense);
 end
