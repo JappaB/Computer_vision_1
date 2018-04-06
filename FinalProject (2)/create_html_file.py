@@ -45,14 +45,19 @@ def create_html_meta_table(model_name):
 def create_html_table_header(model_name):
     # TODO: read avg_p values
 
-    result = f"<thead><tr><th>Airplanes (AP: {avg_p[0]})</th><th>Cars (AP: {avg_p[1]})</th><th>Faces (AP: {avg_p[2]})</th><th>Motorbikes (AP: {avg_p[3]})</th></tr></thead>"
+    avg_p = scipy.io.loadmat(f'average_precision/{model_name}')['AP']
+    print(avg_p)
+    result = f"<thead><tr><th>Airplanes (AP: {avg_p[0,0]})</th><th>Cars (AP: {avg_p[0,1]})</th><th>Faces (AP: {avg_p[0,2]})</th><th>Motorbikes (AP: {avg_p[0,3]})</th></tr></thead>"
 
     return result
 
 def create_html_table_title(model_name):
     # TODO: read avg_p values and calculate MAP
 
+    avg_p = scipy.io.loadmat(f'average_precision/{model_name}')['AP']
+    mAP = np.mean(avg_p)
     result = f"<h1>Prediction lists (MAP: {mAP})</h1>"
+
     return result
 
 def create_page(model_name):
@@ -82,7 +87,7 @@ def create_page(model_name):
       </body>\
     </html>"
 
-    with open("html/" + model_name.split('.')[0] + ".html", 'w') as f:
+    with open("html/" + model_name + ".html", 'w') as f:
         f.write(result)
 
-create_page('stride-20_n-5_k-40_dense-0_colorspace-gray', 1.0, [1.0, 1.0, 1.0, 1.0])
+create_page('stride-20_n-50_k-400_dense-0_colorspace-gray')
