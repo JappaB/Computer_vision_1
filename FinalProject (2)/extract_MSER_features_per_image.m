@@ -19,7 +19,8 @@ if strcmp(colorspace, 'gray')
     features = histograms_from_mser(image_gray, r);
 
 else
-
+    [r,f] = vl_mser(image_gray);
+    
     % Default is rgb
     % else: change color space
     if strcmp(colorspace, 'opponent')                

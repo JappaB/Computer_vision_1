@@ -3,7 +3,7 @@ function train_and_save_bonus_parts(n_training_samples, k, colorspace, maxiters)
 
     % Extract MSER features
     tic
-    descriptors = extract_MSER_features(image_set, colorspace, dense);
+    descriptors = extract_MSER_features(image_set, colorspace);
     time_extract_features = toc;
 
     tic
@@ -21,8 +21,8 @@ function train_and_save_bonus_parts(n_training_samples, k, colorspace, maxiters)
     [test_set, ~] = load_images_bow("test", 50, cell(1,4));
 
     % Quantize features and represent image by frequencies
-    [training_features, training_labels] = create_binary_dataset_MSER(training_set, centers, colorspace, dense);
-    [test_features, test_labels] = create_binary_dataset_MSER(test_set, centers, colorspace, dense);
+    [training_features, training_labels] = create_binary_dataset_MSER(training_set, centers, colorspace);
+    [test_features, test_labels] = create_binary_dataset_MSER(test_set, centers, colorspace);
 
     % Train SVM (per class)
     predictions = [];
@@ -51,35 +51,35 @@ function train_and_save_bonus_parts(n_training_samples, k, colorspace, maxiters)
         binary_test_labels = [binary_test_labels test_labels == class];
         
         % save trained model
-        filename = sprintf('models/stride-20_n-%i_k-%i_dense-%i_colorspace-%s-class-%i.mat', n_training_samples, k, dense, colorspace, class);
+        filename = sprintf('models/stride-20_n-%i_k-%i_colorspace-%s-class-%i.mat', n_training_samples, k, colorspace, class);
         save(filename, '-mat', 'model');
     end
     
     % Save AP
     AP = average_precision(predictions, binary_test_labels);
-    filename = sprintf('average_precision/stride-20_n-%i_k-%i_dense-%i_colorspace-%s-MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('average_precision/stride-20_n-%i_k-%i_colorspace-%s-MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'AP');
 
     % Save predictions
-    filename = sprintf('predictions/stride-20_n-%i_k-%i_dense-%i_colorspace-%s_MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('predictions/stride-20_n-%i_k-%i_colorspace-%s_MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'predictions');
 
     % Save accuracies
-    filename = sprintf('accuracies/stride-20_n-%i_k-%i_dense-%i_colorspace-%s_MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('accuracies/stride-20_n-%i_k-%i_colorspace-%s_MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'accuracies');
     
     % Save labels
-    filename = sprintf('labels/stride-20_n-%i_k-%i_dense-%i_colorspace-%s_MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('labels/stride-20_n-%i_k-%i_colorspace-%s_MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'binary_test_labels');
 
     % Save execution times
     times = [time_extract_features, time_to_cluster];
-    filename = sprintf('times/stride-20_n-%i_k-%i_dense-%i_colorspace-%s_MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('times/stride-20_n-%i_k-%i_colorspace-%s_MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'times');
     
     % Save features
     all_features = {training_features,training_labels,test_features,test_labels}
-    filename = sprintf('features/stride-20_n-%i_k-%i_dense-%i_colorspace-%s_MSER.mat', n_training_samples, k, dense, colorspace);
+    filename = sprintf('features/stride-20_n-%i_k-%i_colorspace-%s_MSER.mat', n_training_samples, k, colorspace);
     save(filename, '-mat', 'all_features');
     
     

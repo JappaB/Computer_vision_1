@@ -52,13 +52,7 @@ train_and_save_svm(n, k, colorspace, dense);
 k = 400;
 n_training_samples = 50;
 
-for colorspace = ["gray", "RGB", "opponent", "normalized_rgb"]
+for colorspace = ["opponent", "RGB", "gray", "normalized_rgb"]
     train_and_save_bonus_parts(n_training_samples, k, colorspace);
 end
 
-k = 800;
-n_training_samples = 100;
-
-for colorspace = ["gray", "RGB", "opponent", "normalized_rgb"]
-    train_and_save_bonus_parts(n_training_samples, k, colorspace);
-end
