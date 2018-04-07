@@ -26,8 +26,8 @@ if strcmp(colorspace, 'gray')
         [~, d] = vl_sift(single(image_gray));
         features = [features d];
     end
-
-else
+% Extra check because there are images that originally grayscale
+elseif size(image, 3) == 3
     % Default is rgb
     % else: change color space
     if strcmp(colorspace, 'opponent')                
